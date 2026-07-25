@@ -1,0 +1,1018 @@
+{
+  "info": {
+    "_postman_id": "25a08c48-fc50-4158-ab05-2478798226f1",
+    "name": "KeyStone_Project_User",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48515739"
+  },
+  "item": [
+    {
+      "name": "Customer API",
+      "item": [
+        {
+          "name": "GetAllCustomer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/customers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetCustomerById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/customers/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "customers",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateCustomer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"customerName\": \"ABC Pvt Ltd\",\r\n    \"email\": \"abc@gmail.com\",\r\n    \"phoneNumber\": \"9876543210\",\r\n    \"companyName\": \"ABC Technologies\",\r\n    \"address\": \"Indore\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/customers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteCustomerById",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/customers/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "customers",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateCustomer",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"customerName\": \"XYZ Pvt Ltd\",\r\n    \"email\": \"xyz@gmail.com\",\r\n    \"phoneNumber\": \"9999999999\",\r\n    \"companyName\": \"XYZ Technologies\",\r\n    \"address\": \"Bhopal\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/customers/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "customers",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User API",
+      "item": [
+        {
+          "name": "GetUserById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateUser",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"Harsh\",\r\n    \"lastName\": \"Rathore\",\r\n    \"email\": \"harsh1@gmail.com\",\r\n    \"password\": \"12345\",\r\n    \"phoneNumber\": \"9876543210\",\r\n    \"role\": \"ADMIN\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteUser",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateUser",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstName\": \"Harsh\",\r\n    \"lastName\": \"Rathore\",\r\n    \"email\": \"harsh123@gmail.com\",\r\n    \"password\": \"12345\",\r\n    \"phoneNumber\": \"9999999999\",\r\n    \"role\": \"TECHNICIAN\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/users/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllUser",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Site API",
+      "item": [
+        {
+          "name": "CreateSite",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"siteName\": \"Indore Office\",\r\n    \"address\": \"Vijay Nagar\",\r\n    \"city\": \"Indore\",\r\n    \"state\": \"Madhya Pradesh\",\r\n    \"postalCode\": \"452010\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/sites",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sites"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllSite",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/sites",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sites"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetSiteById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/sites/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sites",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateSite",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"siteName\": \"Indore Head Office\",\r\n    \"address\": \"Scheme No. 54\",\r\n    \"city\": \"Indore\",\r\n    \"state\": \"Madhya Pradesh\",\r\n    \"postalCode\": \"452010\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/sites/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sites",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteSite",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/sites/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "sites",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "WorkOrder API",
+      "item": [
+        {
+          "name": "CreateWorkOrder",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"workOrderNumber\": \"WO-1001\",\r\n    \"title\": \"AC Repair\",\r\n    \"description\": \"Repair AC in Meeting Room\",\r\n    \"priority\": \"HIGH\",\r\n    \"status\": \"OPEN\",\r\n    \"scheduledDate\": \"2026-07-25\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/workorders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "workorders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllWorkOrder",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/workorders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "workorders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetWorkOrderById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/workorders/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "workorders",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateWorkOrder",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"workOrderNumber\": \"WO-1001\",\r\n    \"title\": \"AC Repair - Updated\",\r\n    \"description\": \"Repair AC in Conference Hall\",\r\n    \"priority\": \"MEDIUM\",\r\n    \"status\": \"IN_PROGRESS\",\r\n    \"scheduledDate\": \"2026-07-26\",\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/workorders/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "workorders",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteWorkOrderById",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/workorders/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "workorders",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Part API",
+      "item": [
+        {
+          "name": "CreatePart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"partName\": \"AC Compressor\",\r\n    \"partNumber\": \"P-1001\",\r\n    \"category\": \"Electrical\",\r\n    \"quantityInStock\": 25,\r\n    \"unitPrice\": 4500.00,\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/parts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "parts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllPart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/parts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "parts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetPartById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/parts/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "parts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePart",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"partName\": \"AC Compressor Premium\",\r\n    \"partNumber\": \"P-1001\",\r\n    \"category\": \"Electrical\",\r\n    \"quantityInStock\": 30,\r\n    \"unitPrice\": 5000.00,\r\n    \"active\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/parts/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "parts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeletePartById",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/parts/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "parts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PartUsage API",
+      "item": [
+        {
+          "name": "CreatePartUsage",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"partName\": \"AC Compressor\",\r\n    \"quantityUsed\": 2,\r\n    \"usedDate\": \"2026-07-23\",\r\n    \"remarks\": \"Installed successfully\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/partusage",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "partusage"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetPartUsageById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/partusage/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "partusage",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetPartUsageAll",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/partusage",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "partusage"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdatePartUsage",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"partName\": \"AC Compressor\",\r\n    \"quantityUsed\": 3,\r\n    \"usedDate\": \"2026-07-24\",\r\n    \"remarks\": \"Updated quantity\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/partusage/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "partusage",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeletePartUsage",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/partusage/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "partusage",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "TimeLog API",
+      "item": [
+        {
+          "name": "CreateTimeLog",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"12:30\",\r\n    \"hoursWorked\": 3.5,\r\n    \"workDescription\": \"AC Installation\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/timelogs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "timelogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAllTimeLog",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/timelogs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "timelogs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetTimeLogByid",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/timelogs/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "timelogs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateTimeLog",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"startTime\": \"09:00\",\r\n    \"endTime\": \"01:00\",\r\n    \"hoursWorked\": 4.0,\r\n    \"workDescription\": \"AC Installation Completed\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/timelogs/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "timelogs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteTimeLogById",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/timelogs/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "timelogs",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "StatusHistory API",
+      "item": [
+        {
+          "name": "CreateStatusHistory",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldStatus\": \"OPEN\",\r\n    \"newStatus\": \"IN_PROGRESS\",\r\n    \"changedBy\": \"Harsh\",\r\n    \"changedDate\": \"2026-07-23\",\r\n    \"remarks\": \"Technician started work\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/statushistory",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statushistory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetStatusHistoryAll",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/statushistory",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statushistory"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetStatusHistoryById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/statushistory/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statushistory",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateStatusHistory",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldStatus\": \"IN_PROGRESS\",\r\n    \"newStatus\": \"COMPLETED\",\r\n    \"changedBy\": \"Harsh\",\r\n    \"changedDate\": \"2026-07-24\",\r\n    \"remarks\": \"Work completed successfully\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/statushistory/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statushistory",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteStatusHistoryById",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/statushistory/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "statushistory",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
