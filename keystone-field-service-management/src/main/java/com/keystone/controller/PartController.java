@@ -1,11 +1,17 @@
 package com.keystone.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.keystone.entity.Part;
+import com.keystone.dto.PartDTO;
+import com.keystone.response.ApiResponse;
 import com.keystone.service.PartService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/parts")
@@ -19,33 +25,86 @@ public class PartController {
 
     // Create Part
     @PostMapping
-    public Part createPart(@RequestBody Part part) {
-        return partService.createPart(part);
+    public ResponseEntity<ApiResponse<PartDTO>> createPart(
+            @Valid @RequestBody PartDTO partDTO) {
+
+        PartDTO part = partService.createPart(partDTO);
+
+        ApiResponse<PartDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.CREATED.value(),
+                true,
+                "Part created successfully.",
+                part);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Get All Parts
     @GetMapping
-    public List<Part> getAllParts() {
-        return partService.getAllParts();
+    public ResponseEntity<ApiResponse<List<PartDTO>>> getAllParts() {
+
+        List<PartDTO> parts = partService.getAllParts();
+
+        ApiResponse<List<PartDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Parts fetched successfully.",
+                parts);
+
+        return ResponseEntity.ok(response);
     }
 
     // Get Part By Id
     @GetMapping("/{id}")
-    public Part getPartById(@PathVariable Long id) {
-        return partService.getPartById(id);
+    public ResponseEntity<ApiResponse<PartDTO>> getPartById(
+            @PathVariable Long id) {
+
+        PartDTO part = partService.getPartById(id);
+
+        ApiResponse<PartDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part fetched successfully.",
+                part);
+
+        return ResponseEntity.ok(response);
     }
 
     // Update Part
     @PutMapping("/{id}")
-    public Part updatePart(@PathVariable Long id,
-                           @RequestBody Part part) {
-        return partService.updatePart(id, part);
+    public ResponseEntity<ApiResponse<PartDTO>> updatePart(
+            @PathVariable Long id,
+            @Valid @RequestBody PartDTO partDTO) {
+
+        PartDTO part = partService.updatePart(id, partDTO);
+
+        ApiResponse<PartDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part updated successfully.",
+                part);
+
+        return ResponseEntity.ok(response);
     }
 
     // Delete Part
     @DeleteMapping("/{id}")
-    public String deletePart(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deletePart(
+            @PathVariable Long id) {
+
         partService.deletePart(id);
-        return "Part Deleted Successfully";
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part deleted successfully.",
+                null);
+
+        return ResponseEntity.ok(response);
     }
 }

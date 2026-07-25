@@ -1,11 +1,17 @@
 package com.keystone.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.keystone.entity.Site;
+import com.keystone.dto.SiteDTO;
+import com.keystone.response.ApiResponse;
 import com.keystone.service.SiteService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/sites")
@@ -19,32 +25,86 @@ public class SiteController {
 
     // Create Site
     @PostMapping
-    public Site createSite(@RequestBody Site site) {
-        return siteService.createSite(site);
+    public ResponseEntity<ApiResponse<SiteDTO>> createSite(
+            @Valid @RequestBody SiteDTO siteDTO) {
+
+        SiteDTO site = siteService.createSite(siteDTO);
+
+        ApiResponse<SiteDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.CREATED.value(),
+                true,
+                "Site created successfully.",
+                site);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Get All Sites
     @GetMapping
-    public List<Site> getAllSites() {
-        return siteService.getAllSites();
+    public ResponseEntity<ApiResponse<List<SiteDTO>>> getAllSites() {
+
+        List<SiteDTO> sites = siteService.getAllSites();
+
+        ApiResponse<List<SiteDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Sites fetched successfully.",
+                sites);
+
+        return ResponseEntity.ok(response);
     }
 
     // Get Site By Id
     @GetMapping("/{id}")
-    public Site getSiteById(@PathVariable Long id) {
-        return siteService.getSiteById(id);
+    public ResponseEntity<ApiResponse<SiteDTO>> getSiteById(
+            @PathVariable Long id) {
+
+        SiteDTO site = siteService.getSiteById(id);
+
+        ApiResponse<SiteDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Site fetched successfully.",
+                site);
+
+        return ResponseEntity.ok(response);
     }
 
     // Update Site
     @PutMapping("/{id}")
-    public Site updateSite(@PathVariable Long id, @RequestBody Site site) {
-        return siteService.updateSite(id, site);
+    public ResponseEntity<ApiResponse<SiteDTO>> updateSite(
+            @PathVariable Long id,
+            @Valid @RequestBody SiteDTO siteDTO) {
+
+        SiteDTO updatedSite = siteService.updateSite(id, siteDTO);
+
+        ApiResponse<SiteDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Site updated successfully.",
+                updatedSite);
+
+        return ResponseEntity.ok(response);
     }
 
     // Delete Site
     @DeleteMapping("/{id}")
-    public String deleteSite(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteSite(
+            @PathVariable Long id) {
+
         siteService.deleteSite(id);
-        return "Site Deleted Successfully";
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Site deleted successfully.",
+                null);
+
+        return ResponseEntity.ok(response);
     }
 }

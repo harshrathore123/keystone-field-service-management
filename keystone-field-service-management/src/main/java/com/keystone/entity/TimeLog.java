@@ -1,8 +1,21 @@
 package com.keystone.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "time_logs")
 @Data
@@ -20,65 +33,8 @@ public class TimeLog {
 
     private String workDescription;
 
-	public TimeLog(Long id, String startTime, String endTime, Double hoursWorked, String workDescription) {
-		super();
-		this.id = id;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.hoursWorked = hoursWorked;
-		this.workDescription = workDescription;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-
-	public String getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-
-	public Double getHoursWorked() {
-		return hoursWorked;
-	}
-
-	public void setHoursWorked(Double hoursWorked) {
-		this.hoursWorked = hoursWorked;
-	}
-
-	public String getWorkDescription() {
-		return workDescription;
-	}
-
-	public void setWorkDescription(String workDescription) {
-		this.workDescription = workDescription;
-	}
-
-	public TimeLog() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public String toString() {
-		return "TimeLog [id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + ", hoursWorked="
-				+ hoursWorked + ", workDescription=" + workDescription + "]";
-	}
-    
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_order_id", nullable = false)
+    @JsonBackReference(value = "workorder-timelog")
+    private WorkOrder workOrder;
 }

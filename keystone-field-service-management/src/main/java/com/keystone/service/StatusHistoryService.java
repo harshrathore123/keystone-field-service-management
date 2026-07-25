@@ -2,17 +2,22 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.StatusHistory;
+import com.keystone.dto.StatusHistoryDTO;
 
 public interface StatusHistoryService {
 
-    StatusHistory createStatusHistory(StatusHistory statusHistory);
+    // Create Status History
+    StatusHistoryDTO createStatusHistory(StatusHistoryDTO statusHistoryDTO);
 
-    List<StatusHistory> getAllStatusHistories();
+    // Get All Status Histories
+    List<StatusHistoryDTO> getAllStatusHistories();
 
-    StatusHistory getStatusHistoryById(Long id);
+    // Get Status History By Id
+    StatusHistoryDTO getStatusHistoryById(Long id);
 
-    StatusHistory updateStatusHistory(Long id, StatusHistory statusHistory);
+    // Update Status History
+    StatusHistoryDTO updateStatusHistory(Long id, StatusHistoryDTO statusHistoryDTO);
 
+    // Delete Status History
     void deleteStatusHistory(Long id);
 }

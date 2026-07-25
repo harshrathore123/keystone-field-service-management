@@ -1,10 +1,14 @@
 package com.keystone.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.keystone.dto.UserDTO;
 import com.keystone.entity.User;
+import com.keystone.exception.ResourceNotFoundException;
+import com.keystone.mapper.UserMapper;
 import com.keystone.repository.UserRepository;
 
 @Service
@@ -17,42 +21,63 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public UserDTO saveUser(UserDTO userDTO) {
+
+        User user = UserMapper.toEntity(userDTO);
+
+        User savedUser = userRepository.save(user);
+
+        return UserMapper.toDTO(savedUser);
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+
+        return userRepository.findAll()
+                .stream()
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public UserDTO getUser(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with id : " + id));
+
+        return UserMapper.toDTO(user);
     }
 
     @Override
-    public User updateUser(Long id, User user) {
+    public UserDTO updateUser(Long id, UserDTO userDTO) {
 
-        User existingUser = userRepository.findById(id).orElse(null);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with id : " + id));
 
-        if (existingUser == null) {
-            return null;
-        }
+        existingUser.setFirstName(userDTO.getFirstName());
+        existingUser.setLastName(userDTO.getLastName());
+        existingUser.setEmail(userDTO.getEmail());
+        existingUser.setPhoneNumber(userDTO.getPhoneNumber());
+        existingUser.setRole(userDTO.getRole());
+        existingUser.setActive(userDTO.getActive());
 
-        existingUser.setFirstName(user.getFirstName());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setPhoneNumber(user.getPhoneNumber());
-        existingUser.setRole(user.getRole());
-        existingUser.setActive(user.getActive());
+        // Uncomment this if your UserDTO contains password
+        // existingUser.setPassword(userDTO.getPassword());
 
-        return userRepository.save(existingUser);
+        User updatedUser = userRepository.save(existingUser);
+
+        return UserMapper.toDTO(updatedUser);
     }
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with id : " + id));
+
+        userRepository.delete(user);
     }
 }

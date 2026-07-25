@@ -1,10 +1,16 @@
 package com.keystone.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.keystone.dto.PartUsageDTO;
+import com.keystone.entity.Part;
 import com.keystone.entity.PartUsage;
+import com.keystone.entity.WorkOrder;
+import com.keystone.exception.ResourceNotFoundException;
+import com.keystone.mapper.PartUsageMapper;
 import com.keystone.repository.PartUsageRepository;
 
 @Service
@@ -17,39 +23,71 @@ public class PartUsageServiceImpl implements PartUsageService {
     }
 
     @Override
-    public PartUsage createPartUsage(PartUsage partUsage) {
-        return repository.save(partUsage);
+    public PartUsageDTO createPartUsage(PartUsageDTO partUsageDTO) {
+
+        PartUsage partUsage = PartUsageMapper.toEntity(partUsageDTO);
+
+        PartUsage savedPartUsage = repository.save(partUsage);
+
+        return PartUsageMapper.toDTO(savedPartUsage);
     }
 
     @Override
-    public List<PartUsage> getAllPartUsages() {
-        return repository.findAll();
+    public List<PartUsageDTO> getAllPartUsages() {
+
+        return repository.findAll()
+                .stream()
+                .map(PartUsageMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public PartUsage getPartUsageById(Long id) {
-        return repository.findById(id).orElse(null);
+    public PartUsageDTO getPartUsageById(Long id) {
+
+        PartUsage partUsage = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Part Usage not found with id : " + id));
+
+        return PartUsageMapper.toDTO(partUsage);
     }
 
     @Override
-    public PartUsage updatePartUsage(Long id, PartUsage partUsage) {
+    public PartUsageDTO updatePartUsage(Long id, PartUsageDTO partUsageDTO) {
 
-        PartUsage existing = repository.findById(id).orElse(null);
+        PartUsage existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Part Usage not found with id : " + id));
 
-        if (existing != null) {
-            existing.setPartName(partUsage.getPartName());
-            existing.setQuantityUsed(partUsage.getQuantityUsed());
-            existing.setUsedDate(partUsage.getUsedDate());
-            existing.setRemarks(partUsage.getRemarks());
+        existing.setQuantityUsed(partUsageDTO.getQuantityUsed());
+        existing.setUsedDate(partUsageDTO.getUsedDate());
+        existing.setRemarks(partUsageDTO.getRemarks());
 
-            return repository.save(existing);
+        // Update WorkOrder Relationship
+        if (partUsageDTO.getWorkOrderId() != null) {
+            WorkOrder workOrder = new WorkOrder();
+            workOrder.setId(partUsageDTO.getWorkOrderId());
+            existing.setWorkOrder(workOrder);
         }
 
-        return null;
+        // Update Part Relationship
+        if (partUsageDTO.getPartId() != null) {
+            Part part = new Part();
+            part.setId(partUsageDTO.getPartId());
+            existing.setPart(part);
+        }
+
+        PartUsage updatedPartUsage = repository.save(existing);
+
+        return PartUsageMapper.toDTO(updatedPartUsage);
     }
 
     @Override
     public void deletePartUsage(Long id) {
-        repository.deleteById(id);
+
+        PartUsage partUsage = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Part Usage not found with id : " + id));
+
+        repository.delete(partUsage);
     }
 }

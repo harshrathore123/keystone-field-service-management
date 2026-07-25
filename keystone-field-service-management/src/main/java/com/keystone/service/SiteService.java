@@ -2,21 +2,21 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.Site;
+import com.keystone.dto.SiteDTO;
 
 public interface SiteService {
 
     // Create Site
-    Site createSite(Site site);
+    SiteDTO createSite(SiteDTO siteDTO);
 
     // Get All Sites
-    List<Site> getAllSites();
+    List<SiteDTO> getAllSites();
 
     // Get Site By Id
-    Site getSiteById(Long id);
+    SiteDTO getSiteById(Long id);
 
     // Update Site
-    Site updateSite(Long id, Site site);
+    SiteDTO updateSite(Long id, SiteDTO siteDTO);
 
     // Delete Site
     void deleteSite(Long id);

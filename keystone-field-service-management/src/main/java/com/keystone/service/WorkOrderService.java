@@ -2,21 +2,21 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.WorkOrder;
+import com.keystone.dto.WorkOrderDTO;
 
 public interface WorkOrderService {
 
     // Create WorkOrder
-    WorkOrder createWorkOrder(WorkOrder workOrder);
+    WorkOrderDTO createWorkOrder(WorkOrderDTO workOrderDTO);
 
     // Get All WorkOrders
-    List<WorkOrder> getAllWorkOrders();
+    List<WorkOrderDTO> getAllWorkOrders();
 
     // Get WorkOrder By Id
-    WorkOrder getWorkOrderById(Long id);
+    WorkOrderDTO getWorkOrderById(Long id);
 
     // Update WorkOrder
-    WorkOrder updateWorkOrder(Long id, WorkOrder workOrder);
+    WorkOrderDTO updateWorkOrder(Long id, WorkOrderDTO workOrderDTO);
 
     // Delete WorkOrder
     void deleteWorkOrder(Long id);

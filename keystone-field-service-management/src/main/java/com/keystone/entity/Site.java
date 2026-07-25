@@ -1,8 +1,26 @@
 package com.keystone.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "sites")
 @Data
@@ -24,84 +42,13 @@ public class Site {
 
     private Boolean active;
 
-	public Site(Long id, String siteName, String address, String city, String state, String postalCode,
-			Boolean active) {
-		super();
-		this.id = id;
-		this.siteName = siteName;
-		this.address = address;
-		this.city = city;
-		this.state = state;
-		this.postalCode = postalCode;
-		this.active = active;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonBackReference(value = "customer-site")
+    private Customer customer;
 
-	public Long getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "site", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "site-workorder")
+    private List<WorkOrder> workOrders;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getSiteName() {
-		return siteName;
-	}
-
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getPostalCode() {
-		return postalCode;
-	}
-
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public Site() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public String toString() {
-		return "Site [id=" + id + ", siteName=" + siteName + ", address=" + address + ", city=" + city + ", state="
-				+ state + ", postalCode=" + postalCode + ", active=" + active + "]";
-	}
-    
-    
 }

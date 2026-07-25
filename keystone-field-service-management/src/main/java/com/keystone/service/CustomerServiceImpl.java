@@ -1,12 +1,15 @@
 package com.keystone.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.keystone.dto.CustomerDTO;
 import com.keystone.entity.Customer;
+import com.keystone.exception.ResourceNotFoundException;
+import com.keystone.mapper.CustomerMapper;
 import com.keystone.repository.CustomerRepository;
-import com.keystone.service.CustomerService;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -18,41 +21,61 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer createCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
+
+        Customer customer = CustomerMapper.toEntity(customerDTO);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return CustomerMapper.toDTO(savedCustomer);
     }
 
     @Override
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> getAllCustomers() {
+
+        return customerRepository.findAll()
+                .stream()
+                .map(CustomerMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id).orElse(null);
+    public CustomerDTO getCustomerById(Long id) {
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer not found with id : " + id));
+
+        return CustomerMapper.toDTO(customer);
     }
 
     @Override
-    public Customer updateCustomer(Long id, Customer customer) {
+    public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
 
-        Customer existingCustomer = customerRepository.findById(id).orElse(null);
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer not found with id : " + id));
 
-        if (existingCustomer != null) {
-            existingCustomer.setCustomerName(customer.getCustomerName());
-            existingCustomer.setEmail(customer.getEmail());
-            existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-            existingCustomer.setCompanyName(customer.getCompanyName());
-            existingCustomer.setAddress(customer.getAddress());
-            existingCustomer.setActive(customer.getActive());
+        existingCustomer.setCustomerName(customerDTO.getCustomerName());
+        existingCustomer.setEmail(customerDTO.getEmail());
+        existingCustomer.setPhoneNumber(customerDTO.getPhoneNumber());
+        existingCustomer.setCompanyName(customerDTO.getCompanyName());
+        existingCustomer.setAddress(customerDTO.getAddress());
+        existingCustomer.setActive(customerDTO.getActive());
 
-            return customerRepository.save(existingCustomer);
-        }
+        Customer updatedCustomer = customerRepository.save(existingCustomer);
 
-        return null;
+        return CustomerMapper.toDTO(updatedCustomer);
     }
 
     @Override
     public void deleteCustomer(Long id) {
-        customerRepository.deleteById(id);
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Customer not found with id : " + id));
+
+        customerRepository.delete(customer);
     }
+
 }

@@ -1,11 +1,17 @@
 package com.keystone.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.keystone.entity.StatusHistory;
+import com.keystone.dto.StatusHistoryDTO;
+import com.keystone.response.ApiResponse;
 import com.keystone.service.StatusHistoryService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/statushistory")
@@ -17,30 +23,88 @@ public class StatusHistoryController {
         this.service = service;
     }
 
+    // Create Status History
     @PostMapping
-    public StatusHistory create(@RequestBody StatusHistory statusHistory) {
-        return service.createStatusHistory(statusHistory);
+    public ResponseEntity<ApiResponse<StatusHistoryDTO>> create(
+            @Valid @RequestBody StatusHistoryDTO statusHistoryDTO) {
+
+        StatusHistoryDTO savedStatusHistory = service.createStatusHistory(statusHistoryDTO);
+
+        ApiResponse<StatusHistoryDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.CREATED.value(),
+                true,
+                "Status History created successfully.",
+                savedStatusHistory);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // Get All Status Histories
     @GetMapping
-    public List<StatusHistory> getAll() {
-        return service.getAllStatusHistories();
+    public ResponseEntity<ApiResponse<List<StatusHistoryDTO>>> getAll() {
+
+        List<StatusHistoryDTO> statusHistories = service.getAllStatusHistories();
+
+        ApiResponse<List<StatusHistoryDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Status Histories fetched successfully.",
+                statusHistories);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Get Status History By Id
     @GetMapping("/{id}")
-    public StatusHistory getById(@PathVariable Long id) {
-        return service.getStatusHistoryById(id);
+    public ResponseEntity<ApiResponse<StatusHistoryDTO>> getById(
+            @PathVariable Long id) {
+
+        StatusHistoryDTO statusHistory = service.getStatusHistoryById(id);
+
+        ApiResponse<StatusHistoryDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Status History fetched successfully.",
+                statusHistory);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Update Status History
     @PutMapping("/{id}")
-    public StatusHistory update(@PathVariable Long id,
-                                @RequestBody StatusHistory statusHistory) {
-        return service.updateStatusHistory(id, statusHistory);
+    public ResponseEntity<ApiResponse<StatusHistoryDTO>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody StatusHistoryDTO statusHistoryDTO) {
+
+        StatusHistoryDTO updatedStatusHistory = service.updateStatusHistory(id, statusHistoryDTO);
+
+        ApiResponse<StatusHistoryDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Status History updated successfully.",
+                updatedStatusHistory);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Delete Status History
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable Long id) {
+
         service.deleteStatusHistory(id);
-        return "Status History Deleted Successfully";
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Status History deleted successfully.",
+                null);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,8 +1,27 @@
 package com.keystone.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "work_orders")
 @Data
@@ -27,94 +46,30 @@ public class WorkOrder {
 
     private Boolean active;
 
-	public WorkOrder(Long id, String workOrderNumber, String title, String description, String priority, String status,
-			String scheduledDate, Boolean active) {
-		super();
-		this.id = id;
-		this.workOrderNumber = workOrderNumber;
-		this.title = title;
-		this.description = description;
-		this.priority = priority;
-		this.status = status;
-		this.scheduledDate = scheduledDate;
-		this.active = active;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonBackReference(value = "customer-workorder")
+    private Customer customer;
 
-	public Long getId() {
-		return id;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "site_id", nullable = false)
+    @JsonBackReference(value = "site-workorder")
+    private Site site;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_user_id")
+    @JsonBackReference(value = "user-workorder")
+    private User assignedUser;
 
-	public String getWorkOrderNumber() {
-		return workOrderNumber;
-	}
+    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "workorder-partusage")
+    private List<PartUsage> partUsages;
 
-	public void setWorkOrderNumber(String workOrderNumber) {
-		this.workOrderNumber = workOrderNumber;
-	}
+    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "workorder-timelog")
+    private List<TimeLog> timeLogs;
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getPriority() {
-		return priority;
-	}
-
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getScheduledDate() {
-		return scheduledDate;
-	}
-
-	public void setScheduledDate(String scheduledDate) {
-		this.scheduledDate = scheduledDate;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public WorkOrder() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public String toString() {
-		return "WorkOrder [id=" + id + ", workOrderNumber=" + workOrderNumber + ", title=" + title + ", description="
-				+ description + ", priority=" + priority + ", status=" + status + ", scheduledDate=" + scheduledDate
-				+ ", active=" + active + "]";
-	}
-    
-    
+    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "workorder-statushistory")
+    private List<StatusHistory> statusHistories;
 }

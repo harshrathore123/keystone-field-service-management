@@ -1,8 +1,20 @@
 package com.keystone.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "status_history")
 @Data
@@ -22,74 +34,8 @@ public class StatusHistory {
 
     private String remarks;
 
-	public StatusHistory(Long id, String oldStatus, String newStatus, String changedBy, String changedDate,
-			String remarks) {
-		super();
-		this.id = id;
-		this.oldStatus = oldStatus;
-		this.newStatus = newStatus;
-		this.changedBy = changedBy;
-		this.changedDate = changedDate;
-		this.remarks = remarks;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getOldStatus() {
-		return oldStatus;
-	}
-
-	public void setOldStatus(String oldStatus) {
-		this.oldStatus = oldStatus;
-	}
-
-	public String getNewStatus() {
-		return newStatus;
-	}
-
-	public void setNewStatus(String newStatus) {
-		this.newStatus = newStatus;
-	}
-
-	public String getChangedBy() {
-		return changedBy;
-	}
-
-	public void setChangedBy(String changedBy) {
-		this.changedBy = changedBy;
-	}
-
-	public String getChangedDate() {
-		return changedDate;
-	}
-
-	public void setChangedDate(String changedDate) {
-		this.changedDate = changedDate;
-	}
-
-	public String getRemarks() {
-		return remarks;
-	}
-
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
-	}
-
-	public StatusHistory() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public String toString() {
-		return "StatusHistory [id=" + id + ", oldStatus=" + oldStatus + ", newStatus=" + newStatus + ", changedBy="
-				+ changedBy + ", changedDate=" + changedDate + ", remarks=" + remarks + "]";
-	}
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_order_id", nullable = false)
+    @JsonBackReference(value = "workorder-statushistory")
+    private WorkOrder workOrder;
 }

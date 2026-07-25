@@ -2,21 +2,21 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.Part;
+import com.keystone.dto.PartDTO;
 
 public interface PartService {
 
     // Create Part
-    Part createPart(Part part);
+    PartDTO createPart(PartDTO partDTO);
 
     // Get All Parts
-    List<Part> getAllParts();
+    List<PartDTO> getAllParts();
 
     // Get Part By Id
-    Part getPartById(Long id);
+    PartDTO getPartById(Long id);
 
     // Update Part
-    Part updatePart(Long id, Part part);
+    PartDTO updatePart(Long id, PartDTO partDTO);
 
     // Delete Part
     void deletePart(Long id);

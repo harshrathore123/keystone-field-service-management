@@ -2,17 +2,23 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.TimeLog;
+import com.keystone.dto.TimeLogDTO;
 
 public interface TimeLogService {
 
-    TimeLog createTimeLog(TimeLog timeLog);
+    // Create Time Log
+    TimeLogDTO createTimeLog(TimeLogDTO timeLogDTO);
 
-    List<TimeLog> getAllTimeLogs();
+    // Get All Time Logs
+    List<TimeLogDTO> getAllTimeLogs();
 
-    TimeLog getTimeLogById(Long id);
+    // Get Time Log By Id
+    TimeLogDTO getTimeLogById(Long id);
 
-    TimeLog updateTimeLog(Long id, TimeLog timeLog);
+    // Update Time Log
+    TimeLogDTO updateTimeLog(Long id, TimeLogDTO timeLogDTO);
 
+    // Delete Time Log
     void deleteTimeLog(Long id);
+
 }

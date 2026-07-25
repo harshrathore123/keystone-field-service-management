@@ -1,10 +1,14 @@
 package com.keystone.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.keystone.dto.PartDTO;
 import com.keystone.entity.Part;
+import com.keystone.exception.ResourceNotFoundException;
+import com.keystone.mapper.PartMapper;
 import com.keystone.repository.PartRepository;
 
 @Service
@@ -17,41 +21,61 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public Part createPart(Part part) {
-        return partRepository.save(part);
+    public PartDTO createPart(PartDTO partDTO) {
+
+        Part part = PartMapper.toEntity(partDTO);
+
+        Part savedPart = partRepository.save(part);
+
+        return PartMapper.toDTO(savedPart);
     }
 
     @Override
-    public List<Part> getAllParts() {
-        return partRepository.findAll();
+    public List<PartDTO> getAllParts() {
+
+        return partRepository.findAll()
+                .stream()
+                .map(PartMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Part getPartById(Long id) {
-        return partRepository.findById(id).orElse(null);
+    public PartDTO getPartById(Long id) {
+
+        Part part = partRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Part not found with id : " + id));
+
+        return PartMapper.toDTO(part);
     }
 
     @Override
-    public Part updatePart(Long id, Part part) {
+    public PartDTO updatePart(Long id, PartDTO partDTO) {
 
-        Part existingPart = partRepository.findById(id).orElse(null);
+        Part existingPart = partRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Part not found with id : " + id));
 
-        if (existingPart != null) {
-            existingPart.setPartName(part.getPartName());
-            existingPart.setPartNumber(part.getPartNumber());
-            existingPart.setCategory(part.getCategory());
-            existingPart.setQuantityInStock(part.getQuantityInStock());
-            existingPart.setUnitPrice(part.getUnitPrice());
-            existingPart.setActive(part.getActive());
+        existingPart.setPartName(partDTO.getPartName());
+        existingPart.setPartNumber(partDTO.getPartNumber());
+        existingPart.setCategory(partDTO.getCategory());
+        existingPart.setQuantityInStock(partDTO.getQuantityInStock());
+        existingPart.setUnitPrice(partDTO.getUnitPrice());
+        existingPart.setActive(partDTO.getActive());
 
-            return partRepository.save(existingPart);
-        }
+        Part updatedPart = partRepository.save(existingPart);
 
-        return null;
+        return PartMapper.toDTO(updatedPart);
     }
 
     @Override
     public void deletePart(Long id) {
-        partRepository.deleteById(id);
+
+        Part part = partRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Part not found with id : " + id));
+
+        partRepository.delete(part);
     }
+
 }

@@ -1,11 +1,17 @@
 package com.keystone.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.keystone.entity.PartUsage;
+import com.keystone.dto.PartUsageDTO;
+import com.keystone.response.ApiResponse;
 import com.keystone.service.PartUsageService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/partusage")
@@ -17,30 +23,88 @@ public class PartUsageController {
         this.service = service;
     }
 
+    // Create Part Usage
     @PostMapping
-    public PartUsage create(@RequestBody PartUsage partUsage) {
-        return service.createPartUsage(partUsage);
+    public ResponseEntity<ApiResponse<PartUsageDTO>> create(
+            @Valid @RequestBody PartUsageDTO partUsageDTO) {
+
+        PartUsageDTO savedPartUsage = service.createPartUsage(partUsageDTO);
+
+        ApiResponse<PartUsageDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.CREATED.value(),
+                true,
+                "Part Usage created successfully.",
+                savedPartUsage);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // Get All Part Usages
     @GetMapping
-    public List<PartUsage> getAll() {
-        return service.getAllPartUsages();
+    public ResponseEntity<ApiResponse<List<PartUsageDTO>>> getAll() {
+
+        List<PartUsageDTO> partUsages = service.getAllPartUsages();
+
+        ApiResponse<List<PartUsageDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part Usages fetched successfully.",
+                partUsages);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Get Part Usage By Id
     @GetMapping("/{id}")
-    public PartUsage getById(@PathVariable Long id) {
-        return service.getPartUsageById(id);
+    public ResponseEntity<ApiResponse<PartUsageDTO>> getById(
+            @PathVariable Long id) {
+
+        PartUsageDTO partUsage = service.getPartUsageById(id);
+
+        ApiResponse<PartUsageDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part Usage fetched successfully.",
+                partUsage);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Update Part Usage
     @PutMapping("/{id}")
-    public PartUsage update(@PathVariable Long id,
-                            @RequestBody PartUsage partUsage) {
-        return service.updatePartUsage(id, partUsage);
+    public ResponseEntity<ApiResponse<PartUsageDTO>> update(
+            @PathVariable Long id,
+            @Valid @RequestBody PartUsageDTO partUsageDTO) {
+
+        PartUsageDTO updatedPartUsage = service.updatePartUsage(id, partUsageDTO);
+
+        ApiResponse<PartUsageDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part Usage updated successfully.",
+                updatedPartUsage);
+
+        return ResponseEntity.ok(response);
     }
 
+    // Delete Part Usage
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable Long id) {
+
         service.deletePartUsage(id);
-        return "Part Usage Deleted Successfully";
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Part Usage deleted successfully.",
+                null);
+
+        return ResponseEntity.ok(response);
     }
 }

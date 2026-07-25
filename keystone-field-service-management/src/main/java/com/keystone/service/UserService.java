@@ -2,17 +2,17 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.User;
+import com.keystone.dto.UserDTO;
 
 public interface UserService {
 
-    User saveUser(User user);
+    UserDTO saveUser(UserDTO userDTO);
 
-    List<User> getAllUsers();
+    List<UserDTO> getAllUsers();
 
-    User getUserById(Long id);
+    UserDTO getUser(Long id);
 
-    User updateUser(Long id, User user);
+    UserDTO updateUser(Long id, UserDTO userDTO);
 
     void deleteUser(Long id);
 

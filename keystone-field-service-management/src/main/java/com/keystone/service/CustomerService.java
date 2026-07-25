@@ -2,21 +2,21 @@ package com.keystone.service;
 
 import java.util.List;
 
-import com.keystone.entity.Customer;
+import com.keystone.dto.CustomerDTO;
 
 public interface CustomerService {
 
     // Create Customer
-    Customer createCustomer(Customer customer);
+    CustomerDTO createCustomer(CustomerDTO customerDTO);
 
     // Get All Customers
-    List<Customer> getAllCustomers();
+    List<CustomerDTO> getAllCustomers();
 
     // Get Customer By Id
-    Customer getCustomerById(Long id);
+    CustomerDTO getCustomerById(Long id);
 
     // Update Customer
-    Customer updateCustomer(Long id, Customer customer);
+    CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO);
 
     // Delete Customer
     void deleteCustomer(Long id);
