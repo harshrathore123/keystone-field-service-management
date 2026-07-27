@@ -11,6 +11,10 @@ import com.keystone.dto.SiteDTO;
 import com.keystone.response.ApiResponse;
 import com.keystone.service.SiteService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -104,6 +108,41 @@ public class SiteController {
                 true,
                 "Site deleted successfully.",
                 null);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<SiteDTO>>> searchSites(
+            @RequestParam String keyword) {
+
+        List<SiteDTO> sites = siteService.searchSites(keyword);
+
+        ApiResponse<List<SiteDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Sites fetched successfully.",
+                sites);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/page")
+    public ResponseEntity<ApiResponse<Page<SiteDTO>>> getSitesWithPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<SiteDTO> sites = siteService.getSitesWithPagination(pageable);
+
+        ApiResponse<Page<SiteDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Sites fetched successfully.",
+                sites);
 
         return ResponseEntity.ok(response);
     }

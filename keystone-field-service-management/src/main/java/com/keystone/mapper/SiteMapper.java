@@ -1,6 +1,7 @@
 package com.keystone.mapper;
 
 import com.keystone.dto.SiteDTO;
+import com.keystone.entity.Customer;
 import com.keystone.entity.Site;
 
 public class SiteMapper {
@@ -22,6 +23,11 @@ public class SiteMapper {
         dto.setPostalCode(site.getPostalCode());
         dto.setActive(site.getActive());
 
+        // Customer Mapping
+        if (site.getCustomer() != null) {
+            dto.setCustomerId(site.getCustomer().getId());
+        }
+
         return dto;
     }
 
@@ -41,6 +47,13 @@ public class SiteMapper {
         site.setState(dto.getState());
         site.setPostalCode(dto.getPostalCode());
         site.setActive(dto.getActive());
+
+        // Customer Mapping
+        if (dto.getCustomerId() != null) {
+            Customer customer = new Customer();
+            customer.setId(dto.getCustomerId());
+            site.setCustomer(customer);
+        }
 
         return site;
     }

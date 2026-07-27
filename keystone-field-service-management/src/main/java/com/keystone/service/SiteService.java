@@ -2,6 +2,8 @@ package com.keystone.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.keystone.dto.SiteDTO;
 
 public interface SiteService {
@@ -20,5 +22,11 @@ public interface SiteService {
 
     // Delete Site
     void deleteSite(Long id);
+    
+ // Search Sites
+    List<SiteDTO> searchSites(String keyword);
+
+    // Pagination
+    Page<SiteDTO> getSitesWithPagination(Pageable pageable);
 
 }

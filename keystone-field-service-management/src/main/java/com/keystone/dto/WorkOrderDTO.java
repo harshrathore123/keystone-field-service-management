@@ -22,6 +22,8 @@ public class WorkOrderDTO {
     private String status;
 
     private String scheduledDate;
+    
+    private String slaDate;
 
     private Boolean active;
 

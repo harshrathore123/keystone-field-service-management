@@ -2,6 +2,9 @@ package com.keystone.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.keystone.dto.CustomerDTO;
 
 public interface CustomerService {
@@ -21,4 +24,9 @@ public interface CustomerService {
     // Delete Customer
     void deleteCustomer(Long id);
 
+    // Search Customers
+    List<CustomerDTO> searchCustomers(String keyword);
+
+    // Pagination
+    Page<CustomerDTO> getCustomersWithPagination(Pageable pageable);
 }

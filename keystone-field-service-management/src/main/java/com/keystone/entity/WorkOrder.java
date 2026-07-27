@@ -43,6 +43,8 @@ public class WorkOrder {
     private String status;
 
     private String scheduledDate;
+    
+    private String slaDate;
 
     private Boolean active;
 
@@ -72,4 +74,6 @@ public class WorkOrder {
     @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "workorder-statushistory")
     private List<StatusHistory> statusHistories;
+    
+
 }

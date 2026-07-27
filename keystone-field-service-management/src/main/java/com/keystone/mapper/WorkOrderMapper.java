@@ -24,6 +24,7 @@ public class WorkOrderMapper {
         dto.setPriority(workOrder.getPriority());
         dto.setStatus(workOrder.getStatus());
         dto.setScheduledDate(workOrder.getScheduledDate());
+        dto.setSlaDate(workOrder.getSlaDate());
         dto.setActive(workOrder.getActive());
 
         if (workOrder.getCustomer() != null) {
@@ -57,6 +58,7 @@ public class WorkOrderMapper {
         workOrder.setPriority(dto.getPriority());
         workOrder.setStatus(dto.getStatus());
         workOrder.setScheduledDate(dto.getScheduledDate());
+        workOrder.setSlaDate(dto.getSlaDate());
         workOrder.setActive(dto.getActive());
 
         if (dto.getCustomerId() != null) {

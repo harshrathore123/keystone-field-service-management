@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.UserDTO;
@@ -23,8 +24,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Create User
+    // Create User (Manager Only)
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<UserDTO>> saveUser(
             @Valid @RequestBody UserDTO userDTO) {
 
@@ -40,8 +42,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Get All Users
+    // Get All Users (Manager Only)
     @GetMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<List<UserDTO>>> getAllUsers() {
 
         List<UserDTO> users = userService.getAllUsers();
@@ -56,8 +59,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // Get User By Id
+    // Get User By Id (Manager Only)
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<UserDTO>> getUser(
             @PathVariable Long id) {
 
@@ -73,8 +77,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // Update User
+    // Update User (Manager Only)
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<UserDTO>> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserDTO userDTO) {
@@ -91,8 +96,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // Delete User
+    // Delete User (Manager Only)
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @PathVariable Long id) {
 

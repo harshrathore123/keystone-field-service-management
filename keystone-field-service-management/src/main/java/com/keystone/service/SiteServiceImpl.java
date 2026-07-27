@@ -12,6 +12,9 @@ import com.keystone.exception.ResourceNotFoundException;
 import com.keystone.mapper.SiteMapper;
 import com.keystone.repository.SiteRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 public class SiteServiceImpl implements SiteService {
 
@@ -84,5 +87,21 @@ public class SiteServiceImpl implements SiteService {
                         "Site not found with id : " + id));
 
         siteRepository.delete(site);
+    }
+    
+    @Override
+    public List<SiteDTO> searchSites(String keyword) {
+
+        return siteRepository.findBySiteNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(SiteMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<SiteDTO> getSitesWithPagination(Pageable pageable) {
+
+        return siteRepository.findAll(pageable)
+                .map(SiteMapper::toDTO);
     }
 }

@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.keystone.dto.CustomerDTO;
 import com.keystone.entity.Customer;
 import com.keystone.exception.ResourceNotFoundException;
@@ -76,6 +79,22 @@ public class CustomerServiceImpl implements CustomerService {
                         "Customer not found with id : " + id));
 
         customerRepository.delete(customer);
+    }
+    
+    @Override
+    public List<CustomerDTO> searchCustomers(String keyword) {
+
+        return customerRepository.findByCustomerNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(CustomerMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CustomerDTO> getCustomersWithPagination(Pageable pageable) {
+
+        return customerRepository.findAll(pageable)
+                .map(CustomerMapper::toDTO);
     }
 
 }
