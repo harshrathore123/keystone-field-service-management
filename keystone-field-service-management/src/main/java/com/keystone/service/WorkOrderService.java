@@ -40,4 +40,16 @@ public interface WorkOrderService {
  // Update SLA Date
     WorkOrderDTO updateSlaDate(Long workOrderId, String slaDate);
     
+    List<WorkOrderDTO> getMyAssignedJobs();
+    
+ // Technician Start Job
+    WorkOrderDTO startJob(Long workOrderId);
+    
+    WorkOrderDTO pauseJob(Long workOrderId);
+    
+ // Resume Job
+    WorkOrderDTO resumeJob(Long workOrderId);
+    
+    WorkOrderDTO completeJob(Long workOrderId);
+    
 }

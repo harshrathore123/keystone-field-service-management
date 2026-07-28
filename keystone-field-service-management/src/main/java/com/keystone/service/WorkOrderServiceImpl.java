@@ -1,5 +1,7 @@
 package com.keystone.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +21,15 @@ import com.keystone.repository.WorkOrderRepository;
 import com.keystone.repository.UserRepository;
 
 import com.keystone.entity.StatusHistory;
+import com.keystone.repository.CustomerRepository;
+import com.keystone.repository.NotificationRepository;
+import com.keystone.repository.SiteRepository;
 import com.keystone.repository.StatusHistoryRepository;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.keystone.entity.Notification;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkOrderServiceImpl implements WorkOrderService {
@@ -27,28 +37,65 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 	private final WorkOrderRepository workOrderRepository;
 	private final UserRepository userRepository;
 	private final StatusHistoryRepository statusHistoryRepository;
+	private final NotificationRepository notificationRepository;
+	private final CustomerRepository customerRepository;
+	private final SiteRepository  siteRepository;
+	
+	public WorkOrderServiceImpl(
+	        WorkOrderRepository workOrderRepository,
+	        CustomerRepository customerRepository,
+	        SiteRepository siteRepository,
+	        UserRepository userRepository,
+	        StatusHistoryRepository statusHistoryRepository,
+	        NotificationRepository notificationRepository) {
 
-	public WorkOrderServiceImpl(WorkOrderRepository workOrderRepository, UserRepository userRepository,
-			StatusHistoryRepository statusHistoryRepository) {
-
-		this.workOrderRepository = workOrderRepository;
-		this.userRepository = userRepository;
-		this.statusHistoryRepository = statusHistoryRepository;
+	    this.workOrderRepository = workOrderRepository;
+	    this.customerRepository = customerRepository;
+	    this.siteRepository = siteRepository;
+	    this.userRepository = userRepository;
+	    this.statusHistoryRepository = statusHistoryRepository;
+	    this.notificationRepository = notificationRepository;
 	}
 
 	@Override
 	public WorkOrderDTO createWorkOrder(WorkOrderDTO workOrderDTO) {
 
-		WorkOrder workOrder = WorkOrderMapper.toEntity(workOrderDTO);
+	    WorkOrder workOrder = WorkOrderMapper.toEntity(workOrderDTO);
 
-		// Default Lifecycle Status
-		workOrder.setStatus("NEW");
+	    // Default Lifecycle Status
+	    workOrder.setStatus("NEW");
 
-		WorkOrder savedWorkOrder = workOrderRepository.save(workOrder);
+	    // Automatic SLA Date Calculation
+	    workOrder.setSlaDate(
+	            calculateSlaDate(
+	                    workOrder.getPriority(),
+	                    workOrder.getScheduledDate()));
 
-		return WorkOrderMapper.toDTO(savedWorkOrder);
+	    // Save Work Order
+	    WorkOrder savedWorkOrder = workOrderRepository.save(workOrder);
+
+	    // Create Notification
+	    if (savedWorkOrder.getAssignedUser() != null) {
+
+	        Notification notification = new Notification();
+
+	        notification.setTitle("New Work Order Assigned");
+	        notification.setMessage(
+	                "Work Order "
+	                        + savedWorkOrder.getWorkOrderNumber()
+	                        + " has been assigned to you.");
+
+	        notification.setCreatedAt(LocalDateTime.now());
+	        notification.setIsRead(false);
+	        notification.setUser(savedWorkOrder.getAssignedUser());
+	        notification.setWorkOrder(savedWorkOrder);
+
+	        notificationRepository.save(notification);
+	    }
+
+	    return WorkOrderMapper.toDTO(savedWorkOrder);
 	}
-
+	
 	@Override
 	public List<WorkOrderDTO> getAllWorkOrders() {
 
@@ -238,5 +285,271 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 		default:
 			return false;
 		}
+	}
+	
+	@Override
+	public List<WorkOrderDTO> getMyAssignedJobs() {
+
+	    // Get logged-in user's email from JWT
+	    Authentication authentication = SecurityContextHolder
+	            .getContext()
+	            .getAuthentication();
+
+	    String email = authentication.getName();
+
+	    // Fetch logged-in technician
+	    User technician = userRepository.findByEmail(email)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException("User not found with email : " + email));
+
+	    // Fetch assigned work orders
+	    List<WorkOrder> workOrders = workOrderRepository.findByAssignedUser(technician);
+
+	    // Convert Entity -> DTO
+	    return workOrders.stream()
+	            .map(WorkOrderMapper::toDTO)
+	            .collect(Collectors.toList());
+	}
+	
+	@Override
+	public WorkOrderDTO startJob(Long workOrderId) {
+
+	    // Step 1: Find Work Order
+	    WorkOrder workOrder = workOrderRepository.findById(workOrderId)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Work Order not found with id : " + workOrderId));
+
+	    // Step 2: Get Logged-in Technician
+	    Authentication authentication = SecurityContextHolder
+	            .getContext()
+	            .getAuthentication();
+
+	    String email = authentication.getName();
+
+	    User technician = userRepository.findByEmail(email)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "User not found with email : " + email));
+
+	    // Step 3: Verify Assigned Technician
+	    if (!workOrder.getAssignedUser().getId().equals(technician.getId())) {
+	        throw new IllegalArgumentException(
+	                "You are not assigned to this work order.");
+	    }
+
+	    // Step 4: Verify Current Status
+	    if (!workOrder.getStatus().equals("ASSIGNED")) {
+	        throw new IllegalArgumentException(
+	                "Only ASSIGNED work orders can be started.");
+	    }
+
+	    // Step 5: Save Status History
+	    StatusHistory history = new StatusHistory();
+
+	    history.setOldStatus("ASSIGNED");
+	    history.setNewStatus("IN_PROGRESS");
+	    history.setChangedBy(email);
+	    history.setChangedDate(java.time.LocalDateTime.now().toString());
+	    history.setRemarks("Job Started");
+	    history.setWorkOrder(workOrder);
+
+	    statusHistoryRepository.save(history);
+
+	    // Step 6: Update Status
+	    workOrder.setStatus("IN_PROGRESS");
+
+	    // Step 7: Save Work Order
+	    WorkOrder updatedWorkOrder = workOrderRepository.save(workOrder);
+
+	    // Step 8: Return DTO
+	    return WorkOrderMapper.toDTO(updatedWorkOrder);
+	}
+	
+	@Override
+	public WorkOrderDTO pauseJob(Long workOrderId) {
+		// Step 1: Find Work Order
+	    WorkOrder workOrder = workOrderRepository.findById(workOrderId)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Work Order not found with id : " + workOrderId));
+
+	    // Step 2: Get Logged-in Technician
+	    Authentication authentication = SecurityContextHolder
+	            .getContext()
+	            .getAuthentication();
+
+	    String email = authentication.getName();
+
+	    User technician = userRepository.findByEmail(email)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "User not found with email : " + email));
+
+	 // Step 3: Verify Assigned Technician
+	    if (!workOrder.getAssignedUser().getId().equals(technician.getId())) {
+	        throw new IllegalArgumentException(
+	                "You are not assigned to this work order.");
+	    }
+
+	 // Step 4: Verify Current Status
+	    if (!workOrder.getStatus().equals("IN_PROGRESS")) {
+	        throw new IllegalArgumentException(
+	                "Only IN_PROGRESS work orders can be paused.");
+	    }
+
+	    // Step 5: Save Status History
+	    StatusHistory history = new StatusHistory();
+
+	    history.setOldStatus("IN_PROGRESS");
+	    history.setNewStatus("ON_HOLD");
+	    history.setChangedBy(email);
+	    history.setChangedDate(LocalDateTime.now().toString());
+	    history.setRemarks("Job Paused");
+	    history.setWorkOrder(workOrder);
+
+	    statusHistoryRepository.save(history);
+
+	    // Step 6: Update Status
+	    workOrder.setStatus("ON_HOLD");
+
+	    // Step 7: Save Work Order
+	    WorkOrder updatedWorkOrder = workOrderRepository.save(workOrder);
+
+	    // Step 8: Return DTO
+	    return WorkOrderMapper.toDTO(updatedWorkOrder);
+	}
+	
+	@Override
+	public WorkOrderDTO resumeJob(Long workOrderId) {
+		// Step 1: Find Work Order
+	    WorkOrder workOrder = workOrderRepository.findById(workOrderId)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Work Order not found with id : " + workOrderId));
+
+	    // Step 2: Get Logged-in Technician
+	    Authentication authentication = SecurityContextHolder
+	            .getContext()
+	            .getAuthentication();
+
+	    String email = authentication.getName();
+
+	    User technician = userRepository.findByEmail(email)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "User not found with email : " + email));
+
+	 // Step 3: Verify Assigned Technician
+	    if (!workOrder.getAssignedUser().getId().equals(technician.getId())) {
+	        throw new IllegalArgumentException(
+	                "You are not assigned to this work order.");
+	    }
+
+	 // Step 4: Verify Current Status
+	    if (!workOrder.getStatus().equals("ON_HOLD")) {
+	        throw new IllegalArgumentException(
+	                "Only ON_HOLD work orders can be resumed.");
+	    }	
+
+	    // Step 5: Save Status History
+	    StatusHistory history = new StatusHistory();
+
+	    history.setOldStatus("ON_HOLD");
+	    history.setNewStatus("IN_PROGRESS");
+	    history.setRemarks("Job Resumed");
+	    history.setChangedBy(email);
+	    history.setChangedDate(LocalDateTime.now().toString());
+	    history.setWorkOrder(workOrder);
+
+	    statusHistoryRepository.save(history);
+
+	    // Step 6: Update Status
+	    workOrder.setStatus("IN_PROGRESS");
+
+	    // Step 7: Save Work Order
+	    WorkOrder updatedWorkOrder = workOrderRepository.save(workOrder);
+
+	    // Step 8: Return DTO
+	    return WorkOrderMapper.toDTO(updatedWorkOrder);
+	}
+	
+	@Override
+	public WorkOrderDTO completeJob(Long workOrderId) {
+
+		// Step 1: Find Work Order
+	    WorkOrder workOrder = workOrderRepository.findById(workOrderId)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Work Order not found with id : " + workOrderId));
+
+	    // Step 2: Get Logged-in Technician
+	    Authentication authentication = SecurityContextHolder
+	            .getContext()
+	            .getAuthentication();
+
+	    String email = authentication.getName();
+
+	    User technician = userRepository.findByEmail(email)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "User not found with email : " + email));
+
+	 // Step 3: Verify Assigned Technician
+	    if (!workOrder.getAssignedUser().getId().equals(technician.getId())) {
+	        throw new IllegalArgumentException(
+	                "You are not assigned to this work order.");
+	    }
+
+	 // Step 4: Verify Current Status
+	    if (!workOrder.getStatus().equals("IN_PROGRESS")) {
+	        throw new IllegalArgumentException(
+	                "Only IN_PROGRESS work orders can be completed.");
+	    }
+
+	    // Step 5: Save Status History
+	    StatusHistory history = new StatusHistory();
+
+	    if (!workOrder.getStatus().equals("IN_PROGRESS")) {
+	        throw new IllegalArgumentException(
+	                "Only IN_PROGRESS work orders can be completed.");
+	    }
+	    history.setChangedBy(email);
+	    history.setChangedDate(LocalDateTime.now().toString());
+	    history.setWorkOrder(workOrder);
+
+	    statusHistoryRepository.save(history);
+
+	    // Step 6: Update Status
+	    workOrder.setStatus("COMPLETED");
+
+	    // Step 7: Save Work Order
+	    WorkOrder updatedWorkOrder = workOrderRepository.save(workOrder);
+
+	    // Step 8: Return DTO
+	    return WorkOrderMapper.toDTO(updatedWorkOrder);
+	}
+	
+	private String calculateSlaDate(String priority, String scheduledDate) {
+
+	    LocalDate date = LocalDate.parse(scheduledDate);
+
+	    switch (priority.toUpperCase()) {
+
+	        case "LOW":
+	            return date.plusDays(3).toString();
+
+	        case "MEDIUM":
+	            return date.plusDays(2).toString();
+
+	        case "HIGH":
+	            return date.plusDays(1).toString();
+
+	        case "CRITICAL":
+	            return date.plusDays(0).toString();
+
+	        default:
+	            return date.plusDays(2).toString();
+	    }
 	}
 }

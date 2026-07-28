@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.WorkOrderDTO;
@@ -221,6 +222,94 @@ public class WorkOrderController {
                 HttpStatus.OK.value(),
                 true,
                 "SLA Date updated successfully.",
+                workOrder);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/my-jobs")
+    @PreAuthorize("hasRole('TECHNICIAN')")
+    public ResponseEntity<ApiResponse<List<WorkOrderDTO>>> getMyAssignedJobs() {
+
+        List<WorkOrderDTO> workOrders = workOrderService.getMyAssignedJobs();
+
+        ApiResponse<List<WorkOrderDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Assigned work orders fetched successfully.",
+                workOrders
+        );
+
+        return ResponseEntity.ok(response);
+    }
+    
+ // Start Job
+    @PutMapping("/{workOrderId}/start")
+    @PreAuthorize("hasRole('TECHNICIAN')")
+    public ResponseEntity<ApiResponse<WorkOrderDTO>> startJob(
+            @PathVariable Long workOrderId) {
+
+        WorkOrderDTO workOrder = workOrderService.startJob(workOrderId);
+
+        ApiResponse<WorkOrderDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Job started successfully.",
+                workOrder);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @PutMapping("/{workOrderId}/pause")
+    @PreAuthorize("hasRole('TECHNICIAN')")
+    public ResponseEntity<ApiResponse<WorkOrderDTO>> pauseJob(
+            @PathVariable Long workOrderId) {
+
+        WorkOrderDTO workOrder = workOrderService.pauseJob(workOrderId);
+
+        ApiResponse<WorkOrderDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Job paused successfully.",
+                workOrder);
+
+        return ResponseEntity.ok(response);
+    }
+    
+ // Resume Job
+    @PutMapping("/{workOrderId}/resume")
+    @PreAuthorize("hasRole('TECHNICIAN')")
+    public ResponseEntity<ApiResponse<WorkOrderDTO>> resumeJob(
+            @PathVariable Long workOrderId) {
+
+        WorkOrderDTO workOrder = workOrderService.resumeJob(workOrderId);
+
+        ApiResponse<WorkOrderDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Job resumed successfully.",
+                workOrder);
+
+        return ResponseEntity.ok(response);
+    }
+    
+ // Complete Job
+    @PutMapping("/{workOrderId}/complete")
+    @PreAuthorize("hasRole('TECHNICIAN')")
+    public ResponseEntity<ApiResponse<WorkOrderDTO>> completeJob(
+            @PathVariable Long workOrderId) {
+
+        WorkOrderDTO workOrder = workOrderService.completeJob(workOrderId);
+
+        ApiResponse<WorkOrderDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Job completed successfully.",
                 workOrder);
 
         return ResponseEntity.ok(response);

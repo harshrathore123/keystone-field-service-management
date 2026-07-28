@@ -58,4 +58,8 @@ public class User {
     @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "user-workorder")
     private List<WorkOrder> workOrders;
+    
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference(value = "user-notification")
+    private List<Notification> notifications;
 }

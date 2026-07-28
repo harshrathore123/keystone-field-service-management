@@ -75,5 +75,8 @@ public class WorkOrder {
     @JsonManagedReference(value = "workorder-statushistory")
     private List<StatusHistory> statusHistories;
     
+    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "workorder-notification")
+    private List<Notification> notifications;
 
 }

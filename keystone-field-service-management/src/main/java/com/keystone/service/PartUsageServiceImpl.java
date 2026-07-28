@@ -11,26 +11,49 @@ import com.keystone.entity.PartUsage;
 import com.keystone.entity.WorkOrder;
 import com.keystone.exception.ResourceNotFoundException;
 import com.keystone.mapper.PartUsageMapper;
+import com.keystone.repository.PartRepository;
 import com.keystone.repository.PartUsageRepository;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PartUsageServiceImpl implements PartUsageService {
 
-    private final PartUsageRepository repository;
+	private final PartUsageRepository repository;
+	private final PartRepository partRepository;
 
-    public PartUsageServiceImpl(PartUsageRepository repository) {
-        this.repository = repository;
-    }
+	public PartUsageServiceImpl(PartUsageRepository repository,
+	                            PartRepository partRepository) {
+	    this.repository = repository;
+	    this.partRepository = partRepository;
+	}
 
-    @Override
-    public PartUsageDTO createPartUsage(PartUsageDTO partUsageDTO) {
+	@Override
+	@Transactional
+	public PartUsageDTO createPartUsage(PartUsageDTO partUsageDTO) {
 
-        PartUsage partUsage = PartUsageMapper.toEntity(partUsageDTO);
+	    Part part = partRepository.findById(partUsageDTO.getPartId())
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Part not found with id : " + partUsageDTO.getPartId()));
 
-        PartUsage savedPartUsage = repository.save(partUsage);
+	    if (part.getQuantityInStock() < partUsageDTO.getQuantityUsed()) {
+	        throw new IllegalArgumentException("Insufficient stock available.");
+	    }
 
-        return PartUsageMapper.toDTO(savedPartUsage);
-    }
+	    part.setQuantityInStock(
+	            part.getQuantityInStock() - partUsageDTO.getQuantityUsed());
+
+	    partRepository.save(part);
+
+	    PartUsage partUsage = PartUsageMapper.toEntity(partUsageDTO);
+
+	    partUsage.setPart(part);
+
+	    PartUsage saved = repository.save(partUsage);
+
+	    return PartUsageMapper.toDTO(saved);
+	}
 
     @Override
     public List<PartUsageDTO> getAllPartUsages() {
