@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.InventoryDTO;
@@ -21,6 +22,7 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PostMapping
     public ResponseEntity<ApiResponse<InventoryDTO>> createInventory(
             @RequestBody InventoryDTO inventoryDTO) {
@@ -37,6 +39,7 @@ public class InventoryController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<InventoryDTO>>> getAllInventory() {
 
@@ -52,6 +55,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/{inventoryId}")
     public ResponseEntity<ApiResponse<InventoryDTO>> getInventoryById(
             @PathVariable Long inventoryId) {
@@ -68,6 +72,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{inventoryId}")
     public ResponseEntity<ApiResponse<InventoryDTO>> updateInventory(
             @PathVariable Long inventoryId,
@@ -86,6 +91,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @DeleteMapping("/{inventoryId}")
     public ResponseEntity<ApiResponse<Void>> deleteInventory(
             @PathVariable Long inventoryId) {

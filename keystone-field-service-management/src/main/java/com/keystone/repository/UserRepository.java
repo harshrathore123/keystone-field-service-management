@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
 
     List<User> findByRole(Role role);
+    
+    long countByRole(String role);
 }

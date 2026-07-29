@@ -34,7 +34,8 @@ public class ReportServiceImpl implements ReportService {
 
         report.setTotalCustomers(customerRepository.count());
         report.setTotalSites(siteRepository.count());
-        report.setTotalTechnicians(userRepository.count());
+        report.setTotalTechnicians(
+                userRepository.countByRole("TECHNICIAN"));
         report.setTotalWorkOrders(workOrderRepository.count());
 
         report.setNewWorkOrders(workOrderRepository.countByStatus("NEW"));

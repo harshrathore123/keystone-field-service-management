@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.SiteDTO;
@@ -28,6 +29,7 @@ public class SiteController {
     }
 
     // Create Site
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PostMapping
     public ResponseEntity<ApiResponse<SiteDTO>> createSite(
             @Valid @RequestBody SiteDTO siteDTO) {
@@ -45,6 +47,7 @@ public class SiteController {
     }
 
     // Get All Sites
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<SiteDTO>>> getAllSites() {
 
@@ -61,6 +64,7 @@ public class SiteController {
     }
 
     // Get Site By Id
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SiteDTO>> getSiteById(
             @PathVariable Long id) {
@@ -78,6 +82,7 @@ public class SiteController {
     }
 
     // Update Site
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<SiteDTO>> updateSite(
             @PathVariable Long id,
@@ -96,6 +101,7 @@ public class SiteController {
     }
 
     // Delete Site
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteSite(
             @PathVariable Long id) {
@@ -112,6 +118,7 @@ public class SiteController {
         return ResponseEntity.ok(response);
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<SiteDTO>>> searchSites(
             @RequestParam String keyword) {
@@ -128,6 +135,7 @@ public class SiteController {
         return ResponseEntity.ok(response);
     }
     
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/page")
     public ResponseEntity<ApiResponse<Page<SiteDTO>>> getSitesWithPagination(
             @RequestParam(defaultValue = "0") int page,

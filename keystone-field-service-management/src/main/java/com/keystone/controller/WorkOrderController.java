@@ -29,6 +29,7 @@ public class WorkOrderController {
     }
 
     // Create WorkOrder
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PostMapping
     public ResponseEntity<ApiResponse<WorkOrderDTO>> createWorkOrder(
             @Valid @RequestBody WorkOrderDTO workOrderDTO) {
@@ -46,6 +47,7 @@ public class WorkOrderController {
     }
 
     // Get All WorkOrders
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<WorkOrderDTO>>> getAllWorkOrders() {
 
@@ -62,6 +64,7 @@ public class WorkOrderController {
     }
 
     // Get WorkOrder By Id
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<WorkOrderDTO>> getWorkOrderById(
             @PathVariable Long id) {
@@ -79,6 +82,7 @@ public class WorkOrderController {
     }
 
     // Update WorkOrder
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<WorkOrderDTO>> updateWorkOrder(
             @PathVariable Long id,
@@ -97,6 +101,7 @@ public class WorkOrderController {
     }
 
     // Delete WorkOrder
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteWorkOrder(
             @PathVariable Long id) {
@@ -114,6 +119,7 @@ public class WorkOrderController {
     }
     
  // Search Work Orders
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<WorkOrderDTO>>> searchWorkOrders(
             @RequestParam String keyword) {
@@ -131,6 +137,7 @@ public class WorkOrderController {
     }
     
  // Pagination
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/page")
     public ResponseEntity<ApiResponse<Page<WorkOrderDTO>>> getWorkOrdersWithPagination(
             @RequestParam(defaultValue = "0") int page,
@@ -152,6 +159,7 @@ public class WorkOrderController {
     }
     
  // Assign Technician
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{workOrderId}/assign-technician/{userId}")
     public ResponseEntity<ApiResponse<WorkOrderDTO>> assignTechnician(
             @PathVariable Long workOrderId,
@@ -171,6 +179,7 @@ public class WorkOrderController {
     }
     
  // Update Priority
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{workOrderId}/priority/{priority}")
     public ResponseEntity<ApiResponse<WorkOrderDTO>> updatePriority(
             @PathVariable Long workOrderId,
@@ -190,6 +199,7 @@ public class WorkOrderController {
     }
     
  // Update Status
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{workOrderId}/status/{status}")
     public ResponseEntity<ApiResponse<WorkOrderDTO>> updateStatus(
             @PathVariable Long workOrderId,
@@ -209,6 +219,7 @@ public class WorkOrderController {
     }
     
  // Update SLA Date
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{workOrderId}/sla-date/{slaDate}")
     public ResponseEntity<ApiResponse<WorkOrderDTO>> updateSlaDate(
             @PathVariable Long workOrderId,

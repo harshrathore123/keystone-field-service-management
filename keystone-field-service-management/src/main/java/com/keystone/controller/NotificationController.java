@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.NotificationDTO;
@@ -22,6 +23,7 @@ public class NotificationController {
     }
 
     // Create Notification
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PostMapping
     public ResponseEntity<ApiResponse<NotificationDTO>> createNotification(
             @RequestBody NotificationDTO notificationDTO) {
@@ -41,6 +43,7 @@ public class NotificationController {
     }
 
     // Get Notification By Id
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<NotificationDTO>> getNotificationById(
             @PathVariable Long id) {
@@ -60,6 +63,7 @@ public class NotificationController {
     }
 
     // Get All Notifications
+    @PreAuthorize("hasRole('MANAGER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<NotificationDTO>>> getAllNotifications() {
 
@@ -78,6 +82,7 @@ public class NotificationController {
     }
 
     // Get Notifications By User
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<NotificationDTO>>> getNotificationsByUser(
             @PathVariable Long userId) {
@@ -97,6 +102,7 @@ public class NotificationController {
     }
 
     // Mark Notification As Read
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN','CUSTOMER')")
     @PutMapping("/read/{id}")
     public ResponseEntity<ApiResponse<NotificationDTO>> markAsRead(
             @PathVariable Long id) {
@@ -116,6 +122,7 @@ public class NotificationController {
     }
 
     // Delete Notification
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteNotification(
             @PathVariable Long id) {

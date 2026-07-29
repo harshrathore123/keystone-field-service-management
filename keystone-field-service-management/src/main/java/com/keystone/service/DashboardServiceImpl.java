@@ -38,8 +38,8 @@ public class DashboardServiceImpl implements DashboardService {
 
         dashboard.setTotalWorkOrders(workOrderRepository.count());
 
-        // Temporary
-        dashboard.setTotalTechnicians(userRepository.count());
+        dashboard.setTotalTechnicians(
+                userRepository.countByRole("TECHNICIAN"));
 
         dashboard.setNewWorkOrders(workOrderRepository.countByStatus("NEW"));
 

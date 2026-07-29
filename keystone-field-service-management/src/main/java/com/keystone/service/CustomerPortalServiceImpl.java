@@ -14,6 +14,7 @@ import com.keystone.repository.WorkOrderRepository;
 
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -93,17 +94,96 @@ public class CustomerPortalServiceImpl implements CustomerPortalService {
 
 	@Override
 	public CustomerDashboardDTO getDashboard() {
-		return null;
+		// Step 1 - Get Logged-in User Email
+		String email = SecurityContextHolder
+		        .getContext()
+		        .getAuthentication()
+		        .getName();
+
+		// Step 2 - Fetch Customer
+		Customer customer = customerRepository.findByEmail(email)
+		        .orElseThrow(() ->
+		                new RuntimeException("Customer not found with email : " + email));
+
+		// Step 3 - Fetch Customer Work Orders
+		List<WorkOrder> workOrders = workOrderRepository.findByCustomer(customer);
+		
+		CustomerDashboardDTO dashboard = new CustomerDashboardDTO();
+		
+		dashboard.setTotalRequests((long) workOrders.size());
+		
+		dashboard.setNewRequests(
+		        workOrders.stream()
+		                .filter(w -> "NEW".equals(w.getStatus()))
+		                .count());
+
+		dashboard.setAssignedRequests(
+		        workOrders.stream()
+		                .filter(w -> "ASSIGNED".equals(w.getStatus()))
+		                .count());
+
+		dashboard.setInProgressRequests(
+		        workOrders.stream()
+		                .filter(w -> "IN_PROGRESS".equals(w.getStatus()))
+		                .count());
+
+		dashboard.setOnHoldRequests(
+		        workOrders.stream()
+		                .filter(w -> "ON_HOLD".equals(w.getStatus()))
+		                .count());
+
+		dashboard.setCompletedRequests(
+		        workOrders.stream()
+		                .filter(w -> "COMPLETED".equals(w.getStatus()))
+		                .count());
+
+		dashboard.setClosedRequests(
+		        workOrders.stream()
+		                .filter(w -> "CLOSED".equals(w.getStatus()))
+		                .count());
+
+		dashboard.setCancelledRequests(
+		        workOrders.stream()
+		                .filter(w -> "CANCELLED".equals(w.getStatus()))
+		                .count());
+		
+		return dashboard;
 	}
 
 	@Override
 	public List<WorkOrderDTO> getMyRequests() {
-		return null;
+
+		// Step 1 - Get Logged-in User Email
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		// Step 2 - Fetch Customer
+		Customer customer = customerRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("Customer not found with email : " + email));
+		// Step 3 - Fetch Customer Work Orders
+		List<WorkOrder> workOrders = workOrderRepository.findByCustomer(customer);
+		// Step 4 - Convert Entity to DTO
+		return workOrders.stream().map(WorkOrderMapper::toDTO).collect(Collectors.toList());
 	}
 
 	@Override
 	public WorkOrderDTO getRequestById(Long workOrderId) {
-		return null;
+		// Step 1 - Get Logged-in User Email
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		// Step 2 - Fetch Customer
+		Customer customer = customerRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("Customer not found with email : " + email));
+		// Step 3 - Fetch Work Order
+		WorkOrder workOrder = workOrderRepository.findById(workOrderId)
+				.orElseThrow(() -> new RuntimeException("Work Order not found with id : " + workOrderId));
+
+		// Step 4 - Validate Ownership
+		if (!workOrder.getCustomer().getId().equals(customer.getId())) {
+			throw new RuntimeException("Access denied. You are not authorized to view this request.");
+		}
+
+		// Step 5 - Convert Entity -> DTO
+		return WorkOrderMapper.toDTO(workOrder);
 	}
 
 	private String calculateSlaDate(String priority, String scheduledDate) {

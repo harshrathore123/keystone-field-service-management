@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.PartDTO;
@@ -24,6 +25,7 @@ public class PartController {
     }
 
     // Create Part
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PostMapping
     public ResponseEntity<ApiResponse<PartDTO>> createPart(
             @Valid @RequestBody PartDTO partDTO) {
@@ -41,6 +43,7 @@ public class PartController {
     }
 
     // Get All Parts
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<PartDTO>>> getAllParts() {
 
@@ -57,6 +60,7 @@ public class PartController {
     }
 
     // Get Part By Id
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PartDTO>> getPartById(
             @PathVariable Long id) {
@@ -74,6 +78,7 @@ public class PartController {
     }
 
     // Update Part
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PartDTO>> updatePart(
             @PathVariable Long id,
@@ -92,6 +97,7 @@ public class PartController {
     }
 
     // Delete Part
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePart(
             @PathVariable Long id) {

@@ -28,7 +28,8 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         analytics.setPendingWorkOrders(pending);
 
         // TODO: Update after overdue query is implemented
-        analytics.setOverdueWorkOrders(0);
+        analytics.setOverdueWorkOrders(
+                workOrderRepository.countByStatus("OVERDUE"));
 
         if (total > 0) {
             analytics.setCompletionRatePercentage((completed * 100.0) / total);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,131 +30,104 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/customers")
 public class CustomerController {
 
-    private final CustomerService customerService;
+	private final CustomerService customerService;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+	public CustomerController(CustomerService customerService) {
+		this.customerService = customerService;
+	}
 
-    // Create Customer
-    @PostMapping
-    public ResponseEntity<ApiResponse<CustomerDTO>> createCustomer(
-            @Valid @RequestBody CustomerDTO customerDTO) {
+	// Create Customer
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@PostMapping
+	public ResponseEntity<ApiResponse<CustomerDTO>> createCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
 
-        CustomerDTO customer = customerService.createCustomer(customerDTO);
+		CustomerDTO customer = customerService.createCustomer(customerDTO);
 
-        ApiResponse<CustomerDTO> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.CREATED.value(),
-                true,
-                "Customer created successfully.",
-                customer);
+		ApiResponse<CustomerDTO> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.CREATED.value(), true,
+				"Customer created successfully.", customer);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
-    // Get All Customers
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<CustomerDTO>>> getAllCustomers() {
+	// Get All Customers
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<CustomerDTO>>> getAllCustomers() {
 
-        List<CustomerDTO> customers = customerService.getAllCustomers();
+		List<CustomerDTO> customers = customerService.getAllCustomers();
 
-        ApiResponse<List<CustomerDTO>> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Customers fetched successfully.",
-                customers);
+		ApiResponse<List<CustomerDTO>> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
+				"Customers fetched successfully.", customers);
 
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(response);
+	}
 
-    // Get Customer By Id
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CustomerDTO>> getCustomerById(
-            @PathVariable Long id) {
+	// Get Customer By Id
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<CustomerDTO>> getCustomerById(@PathVariable Long id) {
 
-        CustomerDTO customer = customerService.getCustomerById(id);
+		CustomerDTO customer = customerService.getCustomerById(id);
 
-        ApiResponse<CustomerDTO> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Customer fetched successfully.",
-                customer);
+		ApiResponse<CustomerDTO> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
+				"Customer fetched successfully.", customer);
 
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(response);
+	}
 
-    // Update Customer
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<CustomerDTO>> updateCustomer(
-            @PathVariable Long id,
-            @Valid @RequestBody CustomerDTO customerDTO) {
+	// Update Customer
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@PutMapping("/{id}")
+	public ResponseEntity<ApiResponse<CustomerDTO>> updateCustomer(@PathVariable Long id,
+			@Valid @RequestBody CustomerDTO customerDTO) {
 
-        CustomerDTO customer = customerService.updateCustomer(id, customerDTO);
+		CustomerDTO customer = customerService.updateCustomer(id, customerDTO);
 
-        ApiResponse<CustomerDTO> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Customer updated successfully.",
-                customer);
+		ApiResponse<CustomerDTO> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
+				"Customer updated successfully.", customer);
 
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(response);
+	}
 
-    // Delete Customer
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteCustomer(
-            @PathVariable Long id) {
+	// Delete Customer
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ApiResponse<Void>> deleteCustomer(@PathVariable Long id) {
 
-        customerService.deleteCustomer(id);
+		customerService.deleteCustomer(id);
 
-        ApiResponse<Void> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Customer deleted successfully.",
-                null);
+		ApiResponse<Void> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
+				"Customer deleted successfully.", null);
 
-        return ResponseEntity.ok(response);
-    }
-    
- // Search Customers
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<CustomerDTO>>> searchCustomers(
-            @RequestParam String keyword) {
+		return ResponseEntity.ok(response);
+	}
 
-        List<CustomerDTO> customers = customerService.searchCustomers(keyword);
+	// Search Customers
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@GetMapping("/search")
+	public ResponseEntity<ApiResponse<List<CustomerDTO>>> searchCustomers(@RequestParam String keyword) {
 
-        ApiResponse<List<CustomerDTO>> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Customers fetched successfully.",
-                customers);
+		List<CustomerDTO> customers = customerService.searchCustomers(keyword);
 
-        return ResponseEntity.ok(response);
-    }
-    
- // Get Customers With Pagination
-    @GetMapping("/page")
-    public ResponseEntity<ApiResponse<Page<CustomerDTO>>> getCustomersWithPagination(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
+		ApiResponse<List<CustomerDTO>> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
+				"Customers fetched successfully.", customers);
 
-        Pageable pageable = PageRequest.of(page, size);
+		return ResponseEntity.ok(response);
+	}
 
-        Page<CustomerDTO> customers = customerService.getCustomersWithPagination(pageable);
+	// Get Customers With Pagination
+	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+	@GetMapping("/page")
+	public ResponseEntity<ApiResponse<Page<CustomerDTO>>> getCustomersWithPagination(
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
 
-        ApiResponse<Page<CustomerDTO>> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Customers fetched successfully.",
-                customers);
+		Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(response);
-    }
+		Page<CustomerDTO> customers = customerService.getCustomersWithPagination(pageable);
+
+		ApiResponse<Page<CustomerDTO>> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
+				"Customers fetched successfully.", customers);
+
+		return ResponseEntity.ok(response);
+	}
 }

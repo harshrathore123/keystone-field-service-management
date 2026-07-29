@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.keystone.dto.TimeLogDTO;
@@ -24,6 +25,7 @@ public class TimeLogController {
     }
 
     // Create Time Log
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @PostMapping
     public ResponseEntity<ApiResponse<TimeLogDTO>> create(
             @Valid @RequestBody TimeLogDTO timeLogDTO) {
@@ -41,6 +43,7 @@ public class TimeLogController {
     }
 
     // Get All Time Logs
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<TimeLogDTO>>> getAll() {
 
@@ -57,6 +60,7 @@ public class TimeLogController {
     }
 
     // Get Time Log By Id
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TimeLogDTO>> getById(
             @PathVariable Long id) {
@@ -74,6 +78,7 @@ public class TimeLogController {
     }
 
     // Update Time Log
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<TimeLogDTO>> update(
             @PathVariable Long id,
@@ -92,6 +97,7 @@ public class TimeLogController {
     }
 
     // Delete Time Log
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long id) {
