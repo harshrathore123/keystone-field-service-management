@@ -1,0 +1,132 @@
+package com.keystone.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.keystone.dto.CustomerDashboardDTO;
+import com.keystone.dto.CustomerRequestDTO;
+import com.keystone.dto.WorkOrderDTO;
+import com.keystone.repository.CustomerRepository;
+import com.keystone.repository.NotificationRepository;
+import com.keystone.repository.SiteRepository;
+import com.keystone.repository.StatusHistoryRepository;
+import com.keystone.repository.WorkOrderRepository;
+
+import java.time.LocalDate;
+import java.util.UUID;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.keystone.entity.Customer;
+import com.keystone.entity.Site;
+import com.keystone.entity.WorkOrder;
+import com.keystone.mapper.WorkOrderMapper;
+import com.keystone.repository.UserRepository;
+
+import java.util.List;
+
+@Service
+public class CustomerPortalServiceImpl implements CustomerPortalService {
+
+	@Autowired
+	private WorkOrderRepository workOrderRepository;
+
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	@Autowired
+	private SiteRepository siteRepository;
+
+	@Autowired
+	private StatusHistoryRepository statusHistoryRepository;
+
+	@Autowired
+	private NotificationRepository notificationRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Override
+	public WorkOrderDTO raiseServiceRequest(CustomerRequestDTO requestDTO) {
+
+		// Step 1 - Get Logged-in User Email
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		// Step 2 - Fetch Customer
+		Customer customer = customerRepository.findByEmail(email)
+				.orElseThrow(() -> new RuntimeException("Customer not found with email : " + email));
+
+		// Step 3 - Fetch Site
+		Site site = siteRepository.findById(requestDTO.getSiteId())
+				.orElseThrow(() -> new RuntimeException("Site not found with id : " + requestDTO.getSiteId()));
+
+		// Step 4 - Create Work Order
+		WorkOrder workOrder = new WorkOrder();
+
+		workOrder.setTitle(requestDTO.getTitle());
+		workOrder.setDescription(requestDTO.getDescription());
+		workOrder.setPriority(requestDTO.getPriority());
+
+		workOrder.setStatus("NEW");
+		workOrder.setActive(true);
+
+		// Customer & Site
+		workOrder.setCustomer(customer);
+		workOrder.setSite(site);
+
+		// No Technician Assigned Initially
+		workOrder.setAssignedUser(null);
+
+		// Scheduled Date = Today
+		workOrder.setScheduledDate(LocalDate.now().toString());
+
+		// SLA Date
+		workOrder.setSlaDate(calculateSlaDate(workOrder.getPriority(), workOrder.getScheduledDate()));
+		workOrder.setWorkOrderNumber("WO-" + System.currentTimeMillis());
+
+		// Step 5 - Save
+		WorkOrder savedWorkOrder = workOrderRepository.save(workOrder);
+
+		// Step 6 - Return DTO
+		return WorkOrderMapper.toDTO(savedWorkOrder);
+	}
+
+	@Override
+	public CustomerDashboardDTO getDashboard() {
+		return null;
+	}
+
+	@Override
+	public List<WorkOrderDTO> getMyRequests() {
+		return null;
+	}
+
+	@Override
+	public WorkOrderDTO getRequestById(Long workOrderId) {
+		return null;
+	}
+
+	private String calculateSlaDate(String priority, String scheduledDate) {
+
+		LocalDate date = LocalDate.parse(scheduledDate);
+
+		switch (priority.toUpperCase()) {
+
+		case "LOW":
+			return date.plusDays(3).toString();
+
+		case "MEDIUM":
+			return date.plusDays(2).toString();
+
+		case "HIGH":
+			return date.plusDays(1).toString();
+
+		case "CRITICAL":
+			return date.toString();
+
+		default:
+			return date.plusDays(2).toString();
+		}
+	}
+
+}
