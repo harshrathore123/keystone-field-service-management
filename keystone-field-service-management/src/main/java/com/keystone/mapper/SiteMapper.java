@@ -4,7 +4,10 @@ import com.keystone.dto.SiteDTO;
 import com.keystone.entity.Customer;
 import com.keystone.entity.Site;
 
-public class SiteMapper {
+public final class SiteMapper {
+
+    private SiteMapper() {
+    }
 
     // Convert Entity to DTO
     public static SiteDTO toDTO(Site site) {
@@ -23,7 +26,6 @@ public class SiteMapper {
         dto.setPostalCode(site.getPostalCode());
         dto.setActive(site.getActive());
 
-        // Customer Mapping
         if (site.getCustomer() != null) {
             dto.setCustomerId(site.getCustomer().getId());
         }
@@ -48,7 +50,6 @@ public class SiteMapper {
         site.setPostalCode(dto.getPostalCode());
         site.setActive(dto.getActive());
 
-        // Customer Mapping
         if (dto.getCustomerId() != null) {
             Customer customer = new Customer();
             customer.setId(dto.getCustomerId());

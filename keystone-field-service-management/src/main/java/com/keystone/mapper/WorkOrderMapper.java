@@ -6,7 +6,10 @@ import com.keystone.entity.Site;
 import com.keystone.entity.User;
 import com.keystone.entity.WorkOrder;
 
-public class WorkOrderMapper {
+public final class WorkOrderMapper {
+
+    private WorkOrderMapper() {
+    }
 
     // Entity -> DTO
     public static WorkOrderDTO toDTO(WorkOrder workOrder) {

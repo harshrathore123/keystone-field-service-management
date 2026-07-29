@@ -1,55 +1,49 @@
 package com.keystone.service;
 
 import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import com.keystone.dto.WorkOrderDTO;
 
 public interface WorkOrderService {
 
-    // Create WorkOrder
+    // CRUD
     WorkOrderDTO createWorkOrder(WorkOrderDTO workOrderDTO);
 
-    // Get All WorkOrders
     List<WorkOrderDTO> getAllWorkOrders();
 
-    // Get WorkOrder By Id
     WorkOrderDTO getWorkOrderById(Long id);
 
-    // Update WorkOrder
     WorkOrderDTO updateWorkOrder(Long id, WorkOrderDTO workOrderDTO);
 
-    // Delete WorkOrder
     void deleteWorkOrder(Long id);
-    
- // Search Work Orders
+
+    // Search
     List<WorkOrderDTO> searchWorkOrders(String keyword);
 
     // Pagination
     Page<WorkOrderDTO> getWorkOrdersWithPagination(Pageable pageable);
 
- // Assign Technician
+    // Technician Assignment
     WorkOrderDTO assignTechnician(Long workOrderId, Long userId);
-    
- // Update Priority
+
+    // Work Order Management
     WorkOrderDTO updatePriority(Long workOrderId, String priority);
 
- // Update Status
     WorkOrderDTO updateStatus(Long workOrderId, String status);
-    
- // Update SLA Date
+
     WorkOrderDTO updateSlaDate(Long workOrderId, String slaDate);
-    
+
+    // Technician APIs
     List<WorkOrderDTO> getMyAssignedJobs();
-    
- // Technician Start Job
+
     WorkOrderDTO startJob(Long workOrderId);
-    
+
     WorkOrderDTO pauseJob(Long workOrderId);
-    
- // Resume Job
+
     WorkOrderDTO resumeJob(Long workOrderId);
-    
+
     WorkOrderDTO completeJob(Long workOrderId);
-    
 }

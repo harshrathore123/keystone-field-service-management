@@ -15,11 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.keystone.dto.CustomerDTO;
 import com.keystone.response.ApiResponse;
 import com.keystone.service.CustomerService;
@@ -98,35 +93,6 @@ public class CustomerController {
 
 		ApiResponse<Void> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
 				"Customer deleted successfully.", null);
-
-		return ResponseEntity.ok(response);
-	}
-
-	// Search Customers
-	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
-	@GetMapping("/search")
-	public ResponseEntity<ApiResponse<List<CustomerDTO>>> searchCustomers(@RequestParam String keyword) {
-
-		List<CustomerDTO> customers = customerService.searchCustomers(keyword);
-
-		ApiResponse<List<CustomerDTO>> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
-				"Customers fetched successfully.", customers);
-
-		return ResponseEntity.ok(response);
-	}
-
-	// Get Customers With Pagination
-	@PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
-	@GetMapping("/page")
-	public ResponseEntity<ApiResponse<Page<CustomerDTO>>> getCustomersWithPagination(
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-
-		Pageable pageable = PageRequest.of(page, size);
-
-		Page<CustomerDTO> customers = customerService.getCustomersWithPagination(pageable);
-
-		ApiResponse<Page<CustomerDTO>> response = new ApiResponse<>(LocalDateTime.now(), HttpStatus.OK.value(), true,
-				"Customers fetched successfully.", customers);
 
 		return ResponseEntity.ok(response);
 	}

@@ -20,62 +20,92 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "work_orders")
-@Data
 public class WorkOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String workOrderNumber;
 
+    @Column(nullable = false)
     private String title;
 
     @Column(length = 1000)
     private String description;
 
+    @Column(nullable = false)
     private String priority;
 
+    @Column(nullable = false)
     private String status;
 
+    @Column(nullable = false)
     private String scheduledDate;
-    
+
+    @Column(nullable = false)
     private String slaDate;
 
-    private Boolean active;
+    @Column(nullable = false)
+    private Boolean active = true;
 
+    // Customer
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonBackReference(value = "customer-workorder")
     private Customer customer;
 
+    // Site
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "site_id", nullable = false)
     @JsonBackReference(value = "site-workorder")
     private Site site;
 
+    // Assigned Technician
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_id")
     @JsonBackReference(value = "user-workorder")
     private User assignedUser;
 
-    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    // Parts Used
+    @OneToMany(
+            mappedBy = "workOrder",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonManagedReference(value = "workorder-partusage")
     private List<PartUsage> partUsages;
 
-    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    // Time Logs
+    @OneToMany(
+            mappedBy = "workOrder",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonManagedReference(value = "workorder-timelog")
     private List<TimeLog> timeLogs;
 
-    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+    // Status History
+    @OneToMany(
+            mappedBy = "workOrder",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonManagedReference(value = "workorder-statushistory")
     private List<StatusHistory> statusHistories;
-    
-    @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL)
+
+    // Notifications
+    @OneToMany(
+            mappedBy = "workOrder",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonManagedReference(value = "workorder-notification")
     private List<Notification> notifications;
 

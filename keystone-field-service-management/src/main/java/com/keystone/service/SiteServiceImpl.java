@@ -10,24 +10,31 @@ import com.keystone.entity.Customer;
 import com.keystone.entity.Site;
 import com.keystone.exception.ResourceNotFoundException;
 import com.keystone.mapper.SiteMapper;
+import com.keystone.repository.CustomerRepository;
 import com.keystone.repository.SiteRepository;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 @Service
 public class SiteServiceImpl implements SiteService {
 
     private final SiteRepository siteRepository;
+    private final CustomerRepository customerRepository;
 
-    public SiteServiceImpl(SiteRepository siteRepository) {
+    public SiteServiceImpl(SiteRepository siteRepository,
+                           CustomerRepository customerRepository) {
         this.siteRepository = siteRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
     public SiteDTO createSite(SiteDTO siteDTO) {
 
+        Customer customer = customerRepository.findById(siteDTO.getCustomerId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Customer not found with id : " + siteDTO.getCustomerId()));
+
         Site site = SiteMapper.toEntity(siteDTO);
+        site.setCustomer(customer);
 
         Site savedSite = siteRepository.save(site);
 
@@ -47,8 +54,9 @@ public class SiteServiceImpl implements SiteService {
     public SiteDTO getSiteById(Long id) {
 
         Site site = siteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Site not found with id : " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Site not found with id : " + id));
 
         return SiteMapper.toDTO(site);
     }
@@ -57,8 +65,14 @@ public class SiteServiceImpl implements SiteService {
     public SiteDTO updateSite(Long id, SiteDTO siteDTO) {
 
         Site existingSite = siteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Site not found with id : " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Site not found with id : " + id));
+
+        Customer customer = customerRepository.findById(siteDTO.getCustomerId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Customer not found with id : " + siteDTO.getCustomerId()));
 
         existingSite.setSiteName(siteDTO.getSiteName());
         existingSite.setAddress(siteDTO.getAddress());
@@ -66,13 +80,7 @@ public class SiteServiceImpl implements SiteService {
         existingSite.setState(siteDTO.getState());
         existingSite.setPostalCode(siteDTO.getPostalCode());
         existingSite.setActive(siteDTO.getActive());
-
-        // Update Customer Relationship
-        if (siteDTO.getCustomerId() != null) {
-            Customer customer = new Customer();
-            customer.setId(siteDTO.getCustomerId());
-            existingSite.setCustomer(customer);
-        }
+        existingSite.setCustomer(customer);
 
         Site updatedSite = siteRepository.save(existingSite);
 
@@ -83,25 +91,10 @@ public class SiteServiceImpl implements SiteService {
     public void deleteSite(Long id) {
 
         Site site = siteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Site not found with id : " + id));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Site not found with id : " + id));
 
         siteRepository.delete(site);
-    }
-    
-    @Override
-    public List<SiteDTO> searchSites(String keyword) {
-
-        return siteRepository.findBySiteNameContainingIgnoreCase(keyword)
-                .stream()
-                .map(SiteMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Page<SiteDTO> getSitesWithPagination(Pageable pageable) {
-
-        return siteRepository.findAll(pageable)
-                .map(SiteMapper::toDTO);
     }
 }

@@ -12,10 +12,6 @@ import com.keystone.dto.SiteDTO;
 import com.keystone.response.ApiResponse;
 import com.keystone.service.SiteService;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -29,7 +25,7 @@ public class SiteController {
     }
 
     // Create Site
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
     @PostMapping
     public ResponseEntity<ApiResponse<SiteDTO>> createSite(
             @Valid @RequestBody SiteDTO siteDTO) {
@@ -47,7 +43,7 @@ public class SiteController {
     }
 
     // Get All Sites
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<SiteDTO>>> getAllSites() {
 
@@ -64,7 +60,7 @@ public class SiteController {
     }
 
     // Get Site By Id
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SiteDTO>> getSiteById(
             @PathVariable Long id) {
@@ -82,7 +78,7 @@ public class SiteController {
     }
 
     // Update Site
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<SiteDTO>> updateSite(
             @PathVariable Long id,
@@ -101,7 +97,7 @@ public class SiteController {
     }
 
     // Delete Site
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteSite(
             @PathVariable Long id) {
@@ -114,43 +110,6 @@ public class SiteController {
                 true,
                 "Site deleted successfully.",
                 null);
-
-        return ResponseEntity.ok(response);
-    }
-    
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<SiteDTO>>> searchSites(
-            @RequestParam String keyword) {
-
-        List<SiteDTO> sites = siteService.searchSites(keyword);
-
-        ApiResponse<List<SiteDTO>> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Sites fetched successfully.",
-                sites);
-
-        return ResponseEntity.ok(response);
-    }
-    
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
-    @GetMapping("/page")
-    public ResponseEntity<ApiResponse<Page<SiteDTO>>> getSitesWithPagination(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<SiteDTO> sites = siteService.getSitesWithPagination(pageable);
-
-        ApiResponse<Page<SiteDTO>> response = new ApiResponse<>(
-                LocalDateTime.now(),
-                HttpStatus.OK.value(),
-                true,
-                "Sites fetched successfully.",
-                sites);
 
         return ResponseEntity.ok(response);
     }

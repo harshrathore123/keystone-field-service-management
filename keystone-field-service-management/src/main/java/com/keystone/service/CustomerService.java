@@ -24,9 +24,9 @@ public interface CustomerService {
     // Delete Customer
     void deleteCustomer(Long id);
 
-    // Search Customers
-    List<CustomerDTO> searchCustomers(String keyword);
-
-    // Pagination
-    Page<CustomerDTO> getCustomersWithPagination(Pageable pageable);
+//    // Search Customers
+//    List<CustomerDTO> searchCustomers(String keyword);
+//
+//    // Pagination
+//    Page<CustomerDTO> getCustomersWithPagination(Pageable pageable);
 }

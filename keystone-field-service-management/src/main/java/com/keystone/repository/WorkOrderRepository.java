@@ -30,6 +30,6 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
 
     long countBySiteAndStatus(Site site, String status);
 
- // Customer Portal
+    // Customer Portal
     List<WorkOrder> findByCustomer(Customer customer);
 }

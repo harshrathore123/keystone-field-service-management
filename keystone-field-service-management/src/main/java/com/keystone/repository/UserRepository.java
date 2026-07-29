@@ -14,12 +14,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    @Query("SELECT u.id FROM User u WHERE u.email = :email")
-	boolean existsByEmail(String email);
+    boolean existsByEmail(String email);
 
     boolean existsByPhoneNumber(String phoneNumber);
 
     List<User> findByRole(Role role);
     
     long countByRole(String role);
+    
+    long countByRole(Role role);
 }

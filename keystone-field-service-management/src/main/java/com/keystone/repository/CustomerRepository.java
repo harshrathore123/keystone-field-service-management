@@ -3,8 +3,6 @@ package com.keystone.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.keystone.entity.Customer;
@@ -23,9 +21,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     // Search by Active Status
     List<Customer> findByActive(Boolean active);
 
-    // Pagination
-    Page<Customer> findAll(Pageable pageable);
-    
+    // Find Customer by Exact Email
     Optional<Customer> findByEmail(String email);
 
 }
