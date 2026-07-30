@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-
 import { Box } from "@mui/material";
 
 import Sidebar from "./Sidebar";
@@ -23,10 +22,12 @@ function DashboardLayout({
       <Sidebar />
 
       <Box
+        component="main"
         sx={{
           flex: 1,
           display: "flex",
           flexDirection: "column",
+          overflow: "hidden",
         }}
       >
         <TopNavbar />
@@ -35,6 +36,7 @@ function DashboardLayout({
           sx={{
             flex: 1,
             p: 3,
+            overflowY: "auto",
           }}
         >
           {children}

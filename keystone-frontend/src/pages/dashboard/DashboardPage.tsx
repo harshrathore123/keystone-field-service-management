@@ -38,10 +38,7 @@ function DashboardPage() {
         Dashboard
       </Typography>
 
-      <Grid
-        container
-        spacing={3}
-      >
+      <Grid container spacing={3}>
         {cards.map((card) => (
           <Grid
             key={card.title}
@@ -77,7 +74,7 @@ function DashboardPage() {
             elevation={4}
             sx={{
               borderRadius: 3,
-              height: 350,
+              minHeight: 350,
             }}
           >
             <CardContent>
@@ -91,7 +88,7 @@ function DashboardPage() {
 
               <Box
                 sx={{
-                  height: 240,
+                  minHeight: 240,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",

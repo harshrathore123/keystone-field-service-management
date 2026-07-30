@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import {
   Box,
   Button,
@@ -7,57 +6,52 @@ import {
   Dialog,
   Typography,
 } from "@mui/material";
-
 import AddIcon from "@mui/icons-material/Add";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
-
-import WorkOrderTable from "./WorkOrderTable";
-import WorkOrderForm from "./WorkOrderForm";
+import PartTable from "./PartTable";
+import PartForm from "./PartForm";
 
 import SearchBar from "../../components/common/SearchBar";
 import ConfirmDeleteDialog from "../../components/common/ConfirmDeleteDialog";
 import AppSnackbar from "../../components/common/AppSnackbar";
 
-import type { WorkOrder } from "../../types/WorkOrder";
+import type { Part } from "../../types/Part";
 
-import WorkOrderService from "../../services/WorkOrderService";
+import {
+  getAllParts,
+  createPart,
+  updatePart,
+  deletePart,
+} from "../../services/PartService";
 
-function WorkOrderPage() {
-  const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
+function PartPage() {
+  const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [open, setOpen] = useState(false);
-  const [selectedWorkOrder, setSelectedWorkOrder] = useState<WorkOrder | null>(
-    null,
-  );
+  const [selectedPart, setSelectedPart] = useState<Part | null>(null);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success",
-  );
+  const [snackbarSeverity, setSnackbarSeverity] =
+    useState<"success" | "error">("success");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [workOrderToDelete, setWorkOrderToDelete] = useState<number | null>(
-    null,
-  );
-
-  const [search, setSearch] = useState("");
+  const [partToDelete, setPartToDelete] = useState<number | null>(null);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [search, setSearch] = useState("");
 
-  const loadWorkOrders = async () => {
+  const loadParts = async () => {
     try {
       setLoading(true);
-
-      const data = await WorkOrderService.getAllWorkOrders();
-
-      setWorkOrders(data);
+      const data = await getAllParts();
+      setParts(data);
     } catch {
       setSnackbarSeverity("error");
-      setSnackbarMessage("Failed to load Work Orders.");
+      setSnackbarMessage("Failed to load parts.");
       setSnackbarOpen(true);
     } finally {
       setLoading(false);
@@ -65,64 +59,64 @@ function WorkOrderPage() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      await loadWorkOrders();
+    const fetchParts = async () => {
+      await loadParts();
     };
 
-    void fetchData();
+    void fetchParts();
   }, []);
 
   const handleAdd = () => {
-    setSelectedWorkOrder(null);
+    setSelectedPart(null);
     setOpen(true);
   };
 
-  const handleEdit = (workOrder: WorkOrder) => {
-    setSelectedWorkOrder(workOrder);
+  const handleEdit = (part: Part) => {
+    setSelectedPart(part);
     setOpen(true);
   };
 
   const handleDelete = (id: number) => {
-    setWorkOrderToDelete(id);
+    setPartToDelete(id);
     setDeleteDialogOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (workOrderToDelete === null) return;
+    if (partToDelete === null) return;
 
     try {
-      await WorkOrderService.deleteWorkOrder(workOrderToDelete);
+      await deletePart(partToDelete);
 
       setSnackbarSeverity("success");
-      setSnackbarMessage("Work Order deleted successfully.");
+      setSnackbarMessage("Part deleted successfully.");
       setSnackbarOpen(true);
 
-      await loadWorkOrders();
+      await loadParts();
     } catch {
       setSnackbarSeverity("error");
       setSnackbarMessage("Delete failed.");
       setSnackbarOpen(true);
     } finally {
       setDeleteDialogOpen(false);
-      setWorkOrderToDelete(null);
+      setPartToDelete(null);
     }
   };
 
-  const handleSave = async (workOrder: WorkOrder) => {
+  const handleSave = async (part: Part) => {
     try {
-      if (workOrder.id) {
-        await WorkOrderService.updateWorkOrder(workOrder.id, workOrder);
+      if (part.id) {
+        await updatePart(part.id, part);
       } else {
-        await WorkOrderService.createWorkOrder(workOrder);
+        await createPart(part);
       }
 
       setOpen(false);
 
       setSnackbarSeverity("success");
-      setSnackbarMessage("Work Order saved successfully.");
+      setSnackbarMessage("Part saved successfully.");
       setSnackbarOpen(true);
 
-      await loadWorkOrders();
+      await loadParts();
     } catch {
       setSnackbarSeverity("error");
       setSnackbarMessage("Save failed.");
@@ -141,14 +135,13 @@ function WorkOrderPage() {
     setPage(0);
   };
 
-  const filteredWorkOrders = workOrders.filter((workOrder) => {
+  const filteredParts = parts.filter((part) => {
     const keyword = search.toLowerCase();
 
     return (
-      workOrder.workOrderNumber.toLowerCase().includes(keyword) ||
-      workOrder.title.toLowerCase().includes(keyword) ||
-      workOrder.priority.toLowerCase().includes(keyword) ||
-      workOrder.status.toLowerCase().includes(keyword)
+      part.partName.toLowerCase().includes(keyword) ||
+      part.partNumber.toLowerCase().includes(keyword) ||
+      part.category.toLowerCase().includes(keyword)
     );
   });
 
@@ -161,18 +154,22 @@ function WorkOrderPage() {
         mb={3}
       >
         <Typography variant="h4" fontWeight="bold">
-          Work Orders
+          Inventory
         </Typography>
 
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
-          Add Work Order
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleAdd}
+        >
+          Add Part
         </Button>
       </Box>
 
       <Box mb={3}>
         <SearchBar
           value={search}
-          placeholder="Search Work Order..."
+          placeholder="Search Part..."
           onChange={(value) => {
             setSearch(value);
             setPage(0);
@@ -180,11 +177,11 @@ function WorkOrderPage() {
         />
       </Box>
 
-      {loading ? (
+            {loading ? (
         <CircularProgress />
       ) : (
-        <WorkOrderTable
-          workOrders={filteredWorkOrders}
+        <PartTable
+          parts={filteredParts}
           onEdit={handleEdit}
           onDelete={handleDelete}
           page={page}
@@ -197,11 +194,11 @@ function WorkOrderPage() {
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
-        maxWidth="lg"
+        maxWidth="md"
         fullWidth
       >
-        <WorkOrderForm
-          workOrder={selectedWorkOrder}
+        <PartForm
+          part={selectedPart}
           onSave={handleSave}
           onCancel={() => setOpen(false)}
         />
@@ -209,11 +206,11 @@ function WorkOrderPage() {
 
       <ConfirmDeleteDialog
         open={deleteDialogOpen}
-        title="Delete Work Order"
-        message="Are you sure you want to delete this Work Order?"
+        title="Delete Part"
+        message="Are you sure you want to delete this part?"
         onClose={() => {
           setDeleteDialogOpen(false);
-          setWorkOrderToDelete(null);
+          setPartToDelete(null);
         }}
         onConfirm={confirmDelete}
       />
@@ -228,4 +225,4 @@ function WorkOrderPage() {
   );
 }
 
-export default WorkOrderPage;
+export default PartPage;

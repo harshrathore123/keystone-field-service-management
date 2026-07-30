@@ -9,10 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.keystone.dto.AuthResponse;
+import com.keystone.dto.CreateTechnicianRequest;
 import com.keystone.dto.LoginRequest;
 import com.keystone.dto.RegisterRequest;
+import com.keystone.dto.UpdateTechnicianRequest;
 import com.keystone.dto.UserDTO;
 import com.keystone.entity.User;
+import com.keystone.enums.Role;
 import com.keystone.exception.ResourceNotFoundException;
 import com.keystone.mapper.UserMapper;
 import com.keystone.repository.UserRepository;
@@ -130,6 +133,71 @@ public class UserServiceImpl implements UserService {
                 token,
                 "Login Successful",
                 user.getRole());
+    }
+    
+    @Override
+    public List<UserDTO> getAllTechnicians() {
+
+        return userRepository.findByRole(Role.TECHNICIAN)
+                .stream()
+                .map(UserMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Override
+    public UserDTO createTechnician(CreateTechnicianRequest request) {
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new RuntimeException("Phone Number already exists");
+        }
+
+        User technician = new User();
+
+        technician.setFirstName(request.getFirstName());
+        technician.setLastName(request.getLastName());
+        technician.setEmail(request.getEmail());
+        technician.setPassword(passwordEncoder.encode(request.getPassword()));
+        technician.setPhoneNumber(request.getPhoneNumber());
+        technician.setRole(Role.TECHNICIAN);
+        technician.setActive(request.getActive());
+
+        User savedTechnician = userRepository.save(technician);
+
+        return UserMapper.toDTO(savedTechnician);
+    }
+    
+    @Override
+    public UserDTO updateTechnician(Long id, UpdateTechnicianRequest request) {
+
+        User technician = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Technician not found with id : " + id));
+
+        technician.setFirstName(request.getFirstName());
+        technician.setLastName(request.getLastName());
+        technician.setEmail(request.getEmail());
+        technician.setPhoneNumber(request.getPhoneNumber());
+        technician.setActive(request.getActive());
+
+        technician.setRole(Role.TECHNICIAN);
+
+        User updatedTechnician = userRepository.save(technician);
+
+        return UserMapper.toDTO(updatedTechnician);
+    }
+    
+    @Override
+    public void deleteTechnician(Long id) {
+
+        User technician = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Technician not found with id : " + id));
+
+        userRepository.delete(technician);
     }
 
 }

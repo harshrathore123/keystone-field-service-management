@@ -8,7 +8,13 @@ import CustomerPage from "../pages/customer/CustomerPage";
 import SitePage from "../pages/site/SitePage";
 import WorkOrderPage from "../pages/workorder/WorkOrderPage";
 
+import TechnicianPage from "../pages/technician/TechnicianPage";
+import TechnicianDashboard from "../pages/technician/TechnicianDashboard";
+import MyJobsPage from "../pages/technician/MyJobsPage";
+
 import { isAuthenticated } from "../utils/token";
+import PartPage from "../pages/inventory/PartPage";
+import ReportPage from "../pages/reports/ReportPage";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -22,7 +28,7 @@ function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Route */}
+        {/* Public */}
         <Route path="/" element={<LoginPage />} />
 
         {/* Dashboard */}
@@ -45,7 +51,7 @@ function AppRoutes() {
           }
         />
 
-        {/* Sites */}
+        {/* Site */}
         <Route
           path="/sites"
           element={
@@ -65,12 +71,32 @@ function AppRoutes() {
           }
         />
 
-        {/* Technicians */}
+        {/* Technician Management */}
         <Route
           path="/technicians"
           element={
             <ProtectedRoute>
-              <div>Technician Module Coming Soon</div>
+              <TechnicianPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Technician Dashboard */}
+        <Route
+          path="/technician-dashboard"
+          element={
+            <ProtectedRoute>
+              <TechnicianDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* My Jobs */}
+        <Route
+          path="/my-jobs"
+          element={
+            <ProtectedRoute>
+              <MyJobsPage />
             </ProtectedRoute>
           }
         />
@@ -80,7 +106,7 @@ function AppRoutes() {
           path="/inventory"
           element={
             <ProtectedRoute>
-              <div>Inventory Module Coming Soon</div>
+              <PartPage/>
             </ProtectedRoute>
           }
         />
@@ -90,12 +116,12 @@ function AppRoutes() {
           path="/reports"
           element={
             <ProtectedRoute>
-              <div>Reports Module Coming Soon</div>
+              <ReportPage/>
             </ProtectedRoute>
           }
         />
 
-        {/* Invalid Route */}
+        {/* Default */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

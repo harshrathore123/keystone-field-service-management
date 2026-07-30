@@ -9,65 +9,65 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { Technician } from "../../types/Technician";
+import type { Part } from "../../types/Part";
 
-interface TechnicianFormProps {
-  technician: Technician | null;
-  onSave: (technician: Technician) => void;
+interface PartFormProps {
+  part: Part | null;
+  onSave: (part: Part) => void;
   onCancel: () => void;
 }
 
-const initialState: Technician = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  phoneNumber: "",
-  role: "TECHNICIAN",
+const initialState: Part = {
+  partName: "",
+  partNumber: "",
+  category: "",
+  quantityInStock: 0,
+  unitPrice: 0,
   active: true,
 };
 
-function TechnicianForm({
-  technician,
+function PartForm({
+  part,
   onSave,
   onCancel,
-}: TechnicianFormProps) {
-  const [formData, setFormData] = useState<Technician>(initialState);
+}: PartFormProps) {
+
+  const [formData, setFormData] = useState<Part>(initialState);
 
   useEffect(() => {
   void Promise.resolve().then(() => {
-    if (technician) {
-      setFormData(technician);
+    if (part) {
+      setFormData(part);
     } else {
       setFormData(initialState);
     }
   });
-}, [technician]);
+}, [part]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
+
     const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]:
+        name === "quantityInStock"
+          ? Number(value)
+          : name === "unitPrice"
+          ? Number(value)
+          : value,
     }));
   };
 
   const handleSubmit = () => {
     if (
-      !formData.firstName.trim() ||
-      !formData.lastName.trim() ||
-      !formData.email.trim() ||
-      !formData.phoneNumber.trim()
+      !formData.partName.trim() ||
+      !formData.partNumber.trim() ||
+      !formData.category.trim()
     ) {
       alert("Please fill all required fields.");
-      return;
-    }
-
-    if (!technician && !formData.password?.trim()) {
-      alert("Password is required.");
       return;
     }
 
@@ -76,52 +76,56 @@ function TechnicianForm({
 
   return (
     <Box p={4}>
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        {technician ? "Update Technician" : "Add Technician"}
+
+      <Typography
+        variant="h5"
+        fontWeight="bold"
+        mb={3}
+      >
+        {part ? "Update Part" : "Add Part"}
       </Typography>
 
       <Stack spacing={3}>
 
         <TextField
-          label="First Name"
-          name="firstName"
+          label="Part Name"
+          name="partName"
           fullWidth
-          value={formData.firstName}
+          value={formData.partName}
           onChange={handleChange}
         />
 
         <TextField
-          label="Last Name"
-          name="lastName"
+          label="Part Number"
+          name="partNumber"
           fullWidth
-          value={formData.lastName}
+          value={formData.partNumber}
           onChange={handleChange}
         />
 
         <TextField
-          label="Email"
-          name="email"
+          label="Category"
+          name="category"
           fullWidth
-          value={formData.email}
+          value={formData.category}
           onChange={handleChange}
         />
 
-        {!technician && (
-          <TextField
-            label="Password"
-            name="password"
-            type="password"
-            fullWidth
-            value={formData.password}
-            onChange={handleChange}
-          />
-        )}
+        <TextField
+          label="Quantity In Stock"
+          name="quantityInStock"
+          type="number"
+          fullWidth
+          value={formData.quantityInStock}
+          onChange={handleChange}
+        />
 
         <TextField
-          label="Phone Number"
-          name="phoneNumber"
+          label="Unit Price"
+          name="unitPrice"
+          type="number"
           fullWidth
-          value={formData.phoneNumber}
+          value={formData.unitPrice}
           onChange={handleChange}
         />
 
@@ -156,13 +160,14 @@ function TechnicianForm({
             variant="contained"
             onClick={handleSubmit}
           >
-            {technician ? "Update" : "Save"}
+            {part ? "Update" : "Save"}
           </Button>
         </Stack>
 
       </Stack>
+
     </Box>
   );
 }
 
-export default TechnicianForm;
+export default PartForm;

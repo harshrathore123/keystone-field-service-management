@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.keystone.dto.CreateTechnicianRequest;
+import com.keystone.dto.UpdateTechnicianRequest;
 import com.keystone.dto.UserDTO;
 import com.keystone.response.ApiResponse;
 import com.keystone.service.UserService;
@@ -109,6 +111,74 @@ public class UserController {
                 HttpStatus.OK.value(),
                 true,
                 "User deleted successfully.",
+                null);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/technicians")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<ApiResponse<List<UserDTO>>> getAllTechnicians() {
+
+        List<UserDTO> technicians = userService.getAllTechnicians();
+
+        ApiResponse<List<UserDTO>> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Technicians fetched successfully.",
+                technicians);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @PostMapping("/technicians")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<ApiResponse<UserDTO>> createTechnician(
+            @Valid @RequestBody CreateTechnicianRequest request) {
+
+    	UserDTO technician = userService.createTechnician(request);
+
+        ApiResponse<UserDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.CREATED.value(),
+                true,
+                "Technician created successfully.",
+                technician);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
+    @PutMapping("/technicians/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<ApiResponse<UserDTO>> updateTechnician(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTechnicianRequest request) {
+
+        UserDTO technician = userService.updateTechnician(id, request);
+
+        ApiResponse<UserDTO> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Technician updated successfully.",
+                technician);
+
+        return ResponseEntity.ok(response);
+    }
+    
+    @DeleteMapping("/technicians/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<ApiResponse<Void>> deleteTechnician(
+            @PathVariable Long id) {
+
+        userService.deleteTechnician(id);
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                true,
+                "Technician deleted successfully.",
                 null);
 
         return ResponseEntity.ok(response);

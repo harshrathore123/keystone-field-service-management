@@ -3,6 +3,7 @@ package com.keystone.service;
 import org.springframework.stereotype.Service;
 
 import com.keystone.dto.ReportDTO;
+import com.keystone.enums.Role;
 import com.keystone.repository.CustomerRepository;
 import com.keystone.repository.SiteRepository;
 import com.keystone.repository.UserRepository;
@@ -35,7 +36,7 @@ public class ReportServiceImpl implements ReportService {
         report.setTotalCustomers(customerRepository.count());
         report.setTotalSites(siteRepository.count());
         report.setTotalTechnicians(
-                userRepository.countByRole("TECHNICIAN"));
+        	    userRepository.countByRole(Role.TECHNICIAN));
         report.setTotalWorkOrders(workOrderRepository.count());
 
         report.setNewWorkOrders(workOrderRepository.countByStatus("NEW"));

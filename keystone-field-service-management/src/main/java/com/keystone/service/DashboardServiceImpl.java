@@ -3,6 +3,7 @@ package com.keystone.service;
 import org.springframework.stereotype.Service;
 
 import com.keystone.dto.DashboardDTO;
+import com.keystone.enums.Role;
 import com.keystone.repository.CustomerRepository;
 import com.keystone.repository.SiteRepository;
 import com.keystone.repository.UserRepository;
@@ -39,7 +40,7 @@ public class DashboardServiceImpl implements DashboardService {
         dashboard.setTotalWorkOrders(workOrderRepository.count());
 
         dashboard.setTotalTechnicians(
-                userRepository.countByRole("TECHNICIAN"));
+                userRepository.countByRole(Role.TECHNICIAN));
 
         dashboard.setNewWorkOrders(workOrderRepository.countByStatus("NEW"));
 

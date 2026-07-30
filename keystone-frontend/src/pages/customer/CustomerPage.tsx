@@ -4,8 +4,6 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  Snackbar,
-  Alert,
   Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,7 +11,9 @@ import AddIcon from "@mui/icons-material/Add";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import CustomerTable from "./CustomerTable";
 import CustomerForm from "./CustomerForm";
-
+import SearchBar from "../../components/common/SearchBar";
+import ConfirmDeleteDialog from "../../components/common/ConfirmDeleteDialog";
+import AppSnackbar from "../../components/common/AppSnackbar";
 import type { Customer } from "../../types/Customer";
 
 import {
@@ -29,15 +29,22 @@ function CustomerPage() {
 
   const [open, setOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
-    null
+    null,
   );
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<
-    "success" | "error"
-  >("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success",
+  );
 
+  const [search, setSearch] = useState("");
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [customerToDelete, setCustomerToDelete] = useState<number | null>(null);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const loadCustomers = async () => {
     try {
       setLoading(true);
@@ -53,12 +60,12 @@ function CustomerPage() {
   };
 
   useEffect(() => {
-  const fetchCustomers = async () => {
-    await loadCustomers();
-  };
+    const fetchCustomers = async () => {
+      await loadCustomers();
+    };
 
-  void fetchCustomers();
-}, []);
+    void fetchCustomers();
+  }, []);
 
   const handleAdd = () => {
     setSelectedCustomer(null);
@@ -70,21 +77,29 @@ function CustomerPage() {
     setOpen(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Delete this customer?")) return;
+  const handleDelete = (id: number) => {
+    setCustomerToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (customerToDelete === null) return;
 
     try {
-      await deleteCustomer(id);
+      await deleteCustomer(customerToDelete);
 
       setSnackbarSeverity("success");
       setSnackbarMessage("Customer deleted successfully.");
       setSnackbarOpen(true);
 
-      loadCustomers();
+      await loadCustomers();
     } catch {
       setSnackbarSeverity("error");
       setSnackbarMessage("Delete failed.");
       setSnackbarOpen(true);
+    } finally {
+      setDeleteDialogOpen(false);
+      setCustomerToDelete(null);
     }
   };
 
@@ -110,6 +125,27 @@ function CustomerPage() {
     }
   };
 
+  const filteredCustomers = customers.filter((customer) => {
+    const keyword = search.toLowerCase();
+
+    return (
+      customer.customerName.toLowerCase().includes(keyword) ||
+      customer.email.toLowerCase().includes(keyword) ||
+      customer.companyName.toLowerCase().includes(keyword)
+    );
+  });
+
+  const handlePageChange = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <DashboardLayout>
       <Box
@@ -122,20 +158,31 @@ function CustomerPage() {
           Customers
         </Typography>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAdd}
-        >
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
           Add Customer
         </Button>
+      </Box>
+
+      <Box mb={3}>
+        <SearchBar
+          value={search}
+          placeholder="Search Customer..."
+          onChange={(value) => {
+            setSearch(value);
+            setPage(0);
+          }}
+        />
       </Box>
 
       {loading ? (
         <CircularProgress />
       ) : (
         <CustomerTable
-          customers={customers}
+          customers={filteredCustomers}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -154,15 +201,23 @@ function CustomerPage() {
         />
       </Dialog>
 
-      <Snackbar
+      <ConfirmDeleteDialog
+        open={deleteDialogOpen}
+        title="Delete Customer"
+        message="Are you sure you want to delete this customer?"
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setCustomerToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+      />
+
+      <AppSnackbar
         open={snackbarOpen}
-        autoHideDuration={3000}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
         onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert severity={snackbarSeverity} variant="filled">
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+      />
     </DashboardLayout>
   );
 }

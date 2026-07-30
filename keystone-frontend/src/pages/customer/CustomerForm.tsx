@@ -26,26 +26,20 @@ const initialState: Customer = {
   active: true,
 };
 
-function CustomerForm({
-  customer,
-  onSave,
-  onCancel,
-}: CustomerFormProps) {
+function CustomerForm({ customer, onSave, onCancel }: CustomerFormProps) {
   const [formData, setFormData] = useState<Customer>(initialState);
 
- useEffect(() => {
-  void Promise.resolve().then(() => {
-    if (customer) {
-      setFormData(customer);
-    } else {
-      setFormData(initialState);
-    }
-  });
-}, [customer]);
+  useEffect(() => {
+    void Promise.resolve().then(() => {
+      if (customer) {
+        setFormData(customer);
+      } else {
+        setFormData(initialState);
+      }
+    });
+  }, [customer]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -71,17 +65,11 @@ function CustomerForm({
 
   return (
     <Box p={4}>
-
-      <Typography
-        variant="h5"
-        fontWeight="bold"
-        mb={3}
-      >
+      <Typography variant="h5" fontWeight="bold" mb={3}>
         {customer ? "Update Customer" : "Add Customer"}
       </Typography>
 
       <Stack spacing={3}>
-
         <TextField
           label="Customer Name"
           name="customerName"
@@ -139,28 +127,16 @@ function CustomerForm({
           label="Active"
         />
 
-        <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="flex-end"
-        >
-          <Button
-            variant="outlined"
-            onClick={onCancel}
-          >
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" onClick={onCancel}>
             Cancel
           </Button>
 
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-          >
+          <Button variant="contained" onClick={handleSubmit}>
             {customer ? "Update" : "Save"}
           </Button>
         </Stack>
-
       </Stack>
-
     </Box>
   );
 }

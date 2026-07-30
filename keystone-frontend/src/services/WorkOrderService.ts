@@ -4,7 +4,6 @@ import type { WorkOrder } from "../types/WorkOrder";
 const API_URL = "/workorders";
 
 class WorkOrderService {
-
   async getAllWorkOrders(): Promise<WorkOrder[]> {
     const response = await axiosInstance.get(API_URL);
     return response.data.data;
@@ -20,8 +19,14 @@ class WorkOrderService {
     return response.data.data;
   }
 
-  async updateWorkOrder(id: number, workOrder: WorkOrder): Promise<WorkOrder> {
-    const response = await axiosInstance.put(`${API_URL}/${id}`, workOrder);
+  async updateWorkOrder(
+    id: number,
+    workOrder: WorkOrder
+  ): Promise<WorkOrder> {
+    const response = await axiosInstance.put(
+      `${API_URL}/${id}`,
+      workOrder
+    );
     return response.data.data;
   }
 
@@ -36,14 +41,10 @@ class WorkOrderService {
     return response.data.data;
   }
 
-  async getWorkOrdersWithPagination(
-    page: number,
-    size: number
-  ) {
+  async getWorkOrdersWithPagination(page: number, size: number) {
     const response = await axiosInstance.get(
       `${API_URL}/page?page=${page}&size=${size}`
     );
-
     return response.data.data;
   }
 
@@ -52,9 +53,9 @@ class WorkOrderService {
     userId: number
   ): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/assign-technician/${userId}`
+      `${API_URL}/${workOrderId}/assign-technician/${userId}`,
+      null
     );
-
     return response.data.data;
   }
 
@@ -63,9 +64,9 @@ class WorkOrderService {
     priority: string
   ): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/priority/${priority}`
+      `${API_URL}/${workOrderId}/priority/${priority}`,
+      null
     );
-
     return response.data.data;
   }
 
@@ -74,9 +75,9 @@ class WorkOrderService {
     status: string
   ): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/status/${status}`
+      `${API_URL}/${workOrderId}/status/${status}`,
+      null
     );
-
     return response.data.data;
   }
 
@@ -85,9 +86,9 @@ class WorkOrderService {
     slaDate: string
   ): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/sla-date/${slaDate}`
+      `${API_URL}/${workOrderId}/sla-date/${slaDate}`,
+      null
     );
-
     return response.data.data;
   }
 
@@ -95,39 +96,38 @@ class WorkOrderService {
     const response = await axiosInstance.get(
       `${API_URL}/my-jobs`
     );
-
     return response.data.data;
   }
 
-  async startJob(workOrderId: number): Promise<WorkOrder> {
+  async startJob(id: number): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/start`
+      `${API_URL}/${id}/start`,
+      null
     );
-
     return response.data.data;
   }
 
-  async pauseJob(workOrderId: number): Promise<WorkOrder> {
+  async pauseJob(id: number): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/pause`
+      `${API_URL}/${id}/pause`,
+      null
     );
-
     return response.data.data;
   }
 
-  async resumeJob(workOrderId: number): Promise<WorkOrder> {
+  async resumeJob(id: number): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/resume`
+      `${API_URL}/${id}/resume`,
+      null
     );
-
     return response.data.data;
   }
 
-  async completeJob(workOrderId: number): Promise<WorkOrder> {
+  async completeJob(id: number): Promise<WorkOrder> {
     const response = await axiosInstance.put(
-      `${API_URL}/${workOrderId}/complete`
+      `${API_URL}/${id}/complete`,
+      null
     );
-
     return response.data.data;
   }
 }

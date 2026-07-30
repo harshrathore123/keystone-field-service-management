@@ -22,12 +22,10 @@ export const getCustomerById = async (id: number): Promise<Customer> => {
 };
 
 // Create Customer
-export const createCustomer = async (
-  customer: Customer
-): Promise<Customer> => {
+export const createCustomer = async (customer: Customer): Promise<Customer> => {
   const response = await api.post<ApiResponse<Customer>>(
     "/customers",
-    customer
+    customer,
   );
   return response.data.data;
 };
@@ -35,11 +33,11 @@ export const createCustomer = async (
 // Update Customer
 export const updateCustomer = async (
   id: number,
-  customer: Customer
+  customer: Customer,
 ): Promise<Customer> => {
   const response = await api.put<ApiResponse<Customer>>(
     `/customers/${id}`,
-    customer
+    customer,
   );
   return response.data.data;
 };

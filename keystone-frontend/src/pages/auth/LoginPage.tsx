@@ -36,9 +36,9 @@ function LoginPage() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
-    "success",
-  );
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    "success" | "error"
+  >("success");
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -56,25 +56,34 @@ function LoginPage() {
         password,
       });
 
-      saveToken(response.token);
+      saveToken(response.token, response.role);
 
       setSnackbarSeverity("success");
       setSnackbarMessage(response.message);
       setSnackbarOpen(true);
 
       setTimeout(() => {
-        navigate("/dashboard");
+        const role = response.role;
+
+        if (role === "TECHNICIAN") {
+          navigate("/technician-dashboard", { replace: true });
+        } else {
+          navigate("/dashboard", { replace: true });
+        }
       }, 1000);
-    }catch (error) {
+    } catch (error) {
+      console.log(error);
 
-    console.log(error);
-
-    if (axios.isAxiosError(error)) {
-        console.log(error.response);
-        console.log(error.response?.data);
+      if (axios.isAxiosError(error)) {
+        setSnackbarSeverity("error");
+        setSnackbarMessage(
+          error.response?.data?.message ?? "Invalid email or password."
+        );
+        setSnackbarOpen(true);
+      }
+    } finally {
+      setLoading(false);
     }
-
-}
   };
 
   return (
@@ -118,7 +127,9 @@ function LoginPage() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)}>
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -131,7 +142,10 @@ function LoginPage() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <FormControlLabel control={<Checkbox />} label="Remember Me" />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="Remember Me"
+              />
 
               <Link href="#" underline="hover">
                 Forgot Password?
@@ -155,10 +169,12 @@ function LoginPage() {
                 borderRadius: 3,
                 fontWeight: "bold",
                 fontSize: 16,
-                background: "linear-gradient(90deg,#1565C0,#26A69A)",
+                background:
+                  "linear-gradient(90deg,#1565C0,#26A69A)",
 
                 "&:hover": {
-                  background: "linear-gradient(90deg,#0D47A1,#00897B)",
+                  background:
+                    "linear-gradient(90deg,#0D47A1,#00897B)",
                 },
               }}
             >

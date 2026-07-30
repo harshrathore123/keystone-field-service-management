@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 
 import {
-  Alert,
   Box,
   Button,
   Dialog,
   DialogContent,
   DialogTitle,
-  Snackbar,
   Typography,
 } from "@mui/material";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import SiteForm from "./SiteForm";
 import SiteTable from "./SiteTable";
+
+import SearchBar from "../../components/common/SearchBar";
+import ConfirmDeleteDialog from "../../components/common/ConfirmDeleteDialog";
+import AppSnackbar from "../../components/common/AppSnackbar";
 
 import type { Site } from "../../types/Site";
 
@@ -38,6 +40,14 @@ function SitePage() {
     message: "",
     severity: "success",
   });
+
+  const [search, setSearch] = useState("");
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [siteToDelete, setSiteToDelete] = useState<number | null>(null);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   function showSnackbar(message: string, severity: "success" | "error") {
     setSnackbar({
@@ -73,15 +83,25 @@ function SitePage() {
     setOpenDialog(true);
   };
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm("Delete this site?")) return;
+  const handleDelete = (id: number) => {
+    setSiteToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (siteToDelete === null) return;
 
     try {
-      await deleteSite(id);
+      await deleteSite(siteToDelete);
+
       showSnackbar("Site deleted successfully", "success");
-      loadSites();
+
+      await loadSites();
     } catch {
       showSnackbar("Failed to delete site", "error");
+    } finally {
+      setDeleteDialogOpen(false);
+      setSiteToDelete(null);
     }
   };
 
@@ -103,6 +123,28 @@ function SitePage() {
     }
   };
 
+  const filteredSites = sites.filter((site) => {
+    const keyword = search.toLowerCase();
+
+    return (
+      site.siteName.toLowerCase().includes(keyword) ||
+      site.city.toLowerCase().includes(keyword) ||
+      site.state.toLowerCase().includes(keyword) ||
+      site.address.toLowerCase().includes(keyword)
+    );
+  });
+
+  const handlePageChange = (_: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <DashboardLayout>
       <Box
@@ -120,7 +162,26 @@ function SitePage() {
         </Button>
       </Box>
 
-      <SiteTable sites={sites} onEdit={handleEdit} onDelete={handleDelete} />
+      <Box mb={3}>
+        <SearchBar
+          value={search}
+          placeholder="Search Site..."
+          onChange={(value) => {
+            setSearch(value);
+            setPage(0);
+          }}
+        />
+      </Box>
+
+      <SiteTable
+        sites={filteredSites}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
       <Dialog
         open={openDialog}
@@ -139,20 +200,28 @@ function SitePage() {
         </DialogContent>
       </Dialog>
 
-      <Snackbar
+      <ConfirmDeleteDialog
+        open={deleteDialogOpen}
+        title="Delete Site"
+        message="Are you sure you want to delete this site?"
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setSiteToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+      />
+
+      <AppSnackbar
         open={snackbar.open}
-        autoHideDuration={3000}
+        message={snackbar.message}
+        severity={snackbar.severity}
         onClose={() =>
           setSnackbar((prev) => ({
             ...prev,
             open: false,
           }))
         }
-      >
-        <Alert severity={snackbar.severity} variant="filled">
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+      />
     </DashboardLayout>
   );
 }

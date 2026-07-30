@@ -17,52 +17,73 @@ import EngineeringIcon from "@mui/icons-material/Engineering";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import LogoutIcon from "@mui/icons-material/Logout";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { removeToken } from "../../utils/token";
-
-const menus = [
-  {
-    title: "Dashboard",
-    icon: <DashboardIcon />,
-    path: "/dashboard",
-  },
-  {
-    title: "Customers",
-    icon: <GroupsIcon />,
-    path: "/customers",
-  },
-  {
-    title: "Sites",
-    icon: <BusinessIcon />,
-    path: "/sites",
-  },
-  {
-    title: "Work Orders",
-    icon: <AssignmentIcon />,
-    path: "/workorders",
-  },
-  {
-    title: "Technicians",
-    icon: <EngineeringIcon />,
-    path: "/technicians",
-  },
-  {
-    title: "Inventory",
-    icon: <Inventory2Icon />,
-    path: "/inventory",
-  },
-  {
-    title: "Reports",
-    icon: <AssessmentIcon />,
-    path: "/reports",
-  },
-];
+import { removeToken, getUserRole } from "../../utils/token";
 
 function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const role = getUserRole();
+
+  const managerMenus = [
+    {
+      title: "Dashboard",
+      icon: <DashboardIcon />,
+      path: "/dashboard",
+    },
+    {
+      title: "Customers",
+      icon: <GroupsIcon />,
+      path: "/customers",
+    },
+    {
+      title: "Sites",
+      icon: <BusinessIcon />,
+      path: "/sites",
+    },
+    {
+      title: "Work Orders",
+      icon: <AssignmentIcon />,
+      path: "/workorders",
+    },
+    {
+      title: "Technicians",
+      icon: <EngineeringIcon />,
+      path: "/technicians",
+    },
+    {
+      title: "Inventory",
+      icon: <Inventory2Icon />,
+      path: "/inventory",
+    },
+    {
+      title: "Reports",
+      icon: <AssessmentIcon />,
+      path: "/reports",
+    },
+  ];
+
+  const technicianMenus = [
+    {
+      title: "Dashboard",
+      icon: <DashboardIcon />,
+      path: "/technician-dashboard",
+    },
+    {
+      title: "My Jobs",
+      icon: <WorkHistoryIcon />,
+      path: "/my-jobs",
+    },
+  ];
+
+  const menus =
+    role === "TECHNICIAN"
+      ? technicianMenus
+      : managerMenus;
 
   const handleLogout = () => {
     removeToken();
@@ -97,7 +118,6 @@ function Sidebar() {
               mx: 1,
               my: 0.5,
               borderRadius: 2,
-
               bgcolor:
                 location.pathname === menu.path
                   ? "#2563EB"
