@@ -144,18 +144,6 @@ function LoginPage() {
               }}
             />
 
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <FormControlLabel control={<Checkbox />} label="Remember Me" />
-
-              <Link href="#" underline="hover">
-                Forgot Password?
-              </Link>
-            </Box>
-
             <Button
               variant="contained"
               size="large"
