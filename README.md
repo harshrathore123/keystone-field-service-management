@@ -113,9 +113,15 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
     │   ├── public
     │   ├── package.json
     │   └── React Frontend
+<<<<<<< HEAD
 
     ├── KeyStone_Project_User.postman_collection.json
 
+=======
+    |
+    │── KeyStone_Project_User.postman_collection.json
+    |
+>>>>>>> 3f6caa43f7fd2d937d1b7899b08a5ff85b3c2021
     └── README.md
 
 ------------------------------------------------------------------------
@@ -174,7 +180,9 @@ Frontend URL:
     http://localhost:5173
 
 ------------------------------------------------------------------------
+API Documentation & Postman Collection
 
+<<<<<<< HEAD
 # API Documentation & Postman Collection
 
 Complete Postman collection is included in the project:
@@ -221,10 +229,73 @@ The Postman collection contains API requests for:
 5.  Login using Auth API.
 6.  Copy JWT token.
 7.  Use token for protected APIs.
+=======
+Complete Postman collection is included in the project:
+
+KeyStone_Project_User.postman_collection.json
+
+The Postman collection contains API requests for:
+>>>>>>> 3f6caa43f7fd2d937d1b7899b08a5ff85b3c2021
+
+Authentication API
+
+<<<<<<< HEAD
+# Project Status
+=======
+User API
+
+Customer API
+
+Site API
+
+WorkOrder API
+
+Technician API
+
+Inventory API
+
+Part API
+
+Part Usage API
+
+TimeLog API
+
+Status History API
+
+Dashboard API
+
+Analytics API
+
+Report API
+
+Customer Portal API
+
+Notification API
+
+How to Test APIs Using Postman
+
+Start Spring Boot backend.
+
+Open Postman.
+
+Import:
+
+<!-- -->
+
+KeyStone_Project_User.postman_collection.json
+
+4.  Use backend URL:
+
+<!-- -->
+
+http://localhost:8080
+
+5.  Login using Auth API.6.  Copy JWT token.7.  Use token for protected APIs.
 
 ------------------------------------------------------------------------
 
-# Project Status
+# 📊 Project Status
+>>>>>>> 3f6caa43f7fd2d937d1b7899b08a5ff85b3c2021
 
 ✅ Authentication Completed\
 ✅ Role Based Access Control Completed\
