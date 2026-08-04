@@ -160,9 +160,15 @@ function WorkOrderPage() {
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" fontWeight="bold">
-          Work Orders
-        </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+            Work Orders
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary">
+            Manage maintenance requests and technician assignments
+          </Typography>
+        </Box>
 
         <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
           Add Work Order
@@ -172,7 +178,7 @@ function WorkOrderPage() {
       <Box mb={3}>
         <SearchBar
           value={search}
-          placeholder="Search Work Order..."
+          placeholder="Search by Work Order Number, Title or Customer..."
           onChange={(value) => {
             setSearch(value);
             setPage(0);

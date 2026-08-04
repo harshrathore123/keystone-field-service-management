@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.keystone.dto.AuthResponse;
+import com.keystone.dto.ChangePasswordRequest;
 import com.keystone.dto.CreateTechnicianRequest;
 import com.keystone.dto.LoginRequest;
 import com.keystone.dto.RegisterRequest;
@@ -20,6 +21,8 @@ import com.keystone.exception.ResourceNotFoundException;
 import com.keystone.mapper.UserMapper;
 import com.keystone.repository.UserRepository;
 import com.keystone.security.jwt.JwtService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.RequiredArgsConstructor;
 
@@ -132,7 +135,12 @@ public class UserServiceImpl implements UserService {
         return new AuthResponse(
                 token,
                 "Login Successful",
-                user.getRole());
+                user.getRole(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber()
+        );
     }
     
     @Override
@@ -198,6 +206,30 @@ public class UserServiceImpl implements UserService {
                         "Technician not found with id : " + id));
 
         userRepository.delete(technician);
+    }
+    
+    @Override
+    public void changePassword(ChangePasswordRequest request) {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect.");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("New password and confirm password do not match.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
     }
 
 }

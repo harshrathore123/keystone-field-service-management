@@ -153,11 +153,25 @@ function SitePage() {
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" fontWeight="bold">
-          Site Management
-        </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+            Sites
+          </Typography>
 
-        <Button variant="contained" onClick={handleAdd}>
+          <Typography variant="body2" color="text.secondary">
+            Manage all customer sites and locations
+          </Typography>
+        </Box>
+        <Button
+          variant="contained"
+          onClick={handleAdd}
+          sx={{
+            borderRadius: 3,
+            px: 3,
+            textTransform: "none",
+            fontWeight: 600,
+          }}
+        >
           Add Site
         </Button>
       </Box>
@@ -188,8 +202,21 @@ function SitePage() {
         onClose={() => setOpenDialog(false)}
         fullWidth
         maxWidth="md"
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+          },
+        }}
       >
-        <DialogTitle>{selectedSite ? "Edit Site" : "Add Site"}</DialogTitle>
+        <DialogTitle
+          sx={{
+            fontWeight: "bold",
+            fontSize: 24,
+            pb: 1,
+          }}
+        >
+          {selectedSite ? "Update Site" : "Add Site"}
+        </DialogTitle>
 
         <DialogContent>
           <SiteForm

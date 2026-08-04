@@ -66,18 +66,14 @@ const ReportChart = ({ report }: Props) => {
     <Grid container spacing={3} mt={3}>
       <Grid size={{ xs: 12, md: 6 }}>
         <Paper
-          elevation={3}
+          elevation={6}
           sx={{
             p: 3,
-            borderRadius: 3,
+            borderRadius: 4,
             height: 420,
           }}
         >
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            mb={2}
-          >
+          <Typography variant="h6" fontWeight={700} mb={2}>
             Work Order Status
           </Typography>
 
@@ -87,19 +83,23 @@ const ReportChart = ({ report }: Props) => {
                 data={chartData}
                 dataKey="value"
                 nameKey="name"
-                outerRadius={120}
+                outerRadius={130}
+                innerRadius={55}
+                paddingAngle={3}
                 label
               >
                 {chartData.map((_, index) => (
-                  <Cell
-                    key={index}
-                    fill={COLORS[index]}
-                  />
+                  <Cell key={index} fill={COLORS[index]} />
                 ))}
               </Pie>
 
-              <Tooltip />
-              <Legend />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: 10,
+                  border: "none",
+                }}
+              />
+              <Legend verticalAlign="bottom" height={36} />
             </PieChart>
           </ResponsiveContainer>
         </Paper>
@@ -114,17 +114,13 @@ const ReportChart = ({ report }: Props) => {
             height: 420,
           }}
         >
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            mb={2}
-          >
+          <Typography variant="h6" fontWeight="bold" mb={2}>
             Work Order Analysis
           </Typography>
 
           <ResponsiveContainer width="100%" height="90%">
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="5 5" />
 
               <XAxis dataKey="name" />
 
@@ -134,11 +130,7 @@ const ReportChart = ({ report }: Props) => {
 
               <Legend />
 
-              <Bar
-                dataKey="value"
-                fill="#1976d2"
-                radius={[6, 6, 0, 0]}
-              />
+              <Bar dataKey="value" fill="#1976d2" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Paper>

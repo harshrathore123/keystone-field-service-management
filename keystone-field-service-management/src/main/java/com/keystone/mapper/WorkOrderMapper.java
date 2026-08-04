@@ -32,16 +32,22 @@ public final class WorkOrderMapper {
 
         if (workOrder.getCustomer() != null) {
             dto.setCustomerId(workOrder.getCustomer().getId());
+            dto.setCustomerName(workOrder.getCustomer().getCustomerName());
         }
 
         if (workOrder.getSite() != null) {
             dto.setSiteId(workOrder.getSite().getId());
+            dto.setSiteName(workOrder.getSite().getSiteName());
         }
-
         if (workOrder.getAssignedUser() != null) {
             dto.setAssignedUserId(workOrder.getAssignedUser().getId());
-        }
 
+            dto.setAssignedTechnicianName(
+                workOrder.getAssignedUser().getFirstName()
+                    + " "
+                    + workOrder.getAssignedUser().getLastName()
+            );
+        }
         return dto;
     }
 

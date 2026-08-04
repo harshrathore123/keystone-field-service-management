@@ -7,26 +7,33 @@ import com.keystone.entity.WorkOrder;
 public class TimeLogMapper {
 
     // Entity -> DTO
-    public static TimeLogDTO toDTO(TimeLog timeLog) {
+	public static TimeLogDTO toDTO(TimeLog timeLog) {
 
-        if (timeLog == null) {
-            return null;
-        }
+	    if (timeLog == null) {
+	        return null;
+	    }
 
-        TimeLogDTO dto = new TimeLogDTO();
+	    TimeLogDTO dto = new TimeLogDTO();
 
-        dto.setId(timeLog.getId());
-        dto.setStartTime(timeLog.getStartTime());
-        dto.setEndTime(timeLog.getEndTime());
-        dto.setHoursWorked(timeLog.getHoursWorked());
-        dto.setWorkDescription(timeLog.getWorkDescription());
+	    dto.setId(timeLog.getId());
+	    dto.setStartTime(timeLog.getStartTime());
+	    dto.setEndTime(timeLog.getEndTime());
+	    dto.setHoursWorked(timeLog.getHoursWorked());
+	    dto.setWorkDescription(timeLog.getWorkDescription());
 
-        if (timeLog.getWorkOrder() != null) {
-            dto.setWorkOrderId(timeLog.getWorkOrder().getId());
-        }
+	    if (timeLog.getWorkOrder() != null) {
 
-        return dto;
-    }
+	        dto.setWorkOrderId(timeLog.getWorkOrder().getId());
+
+	        dto.setWorkOrderNumber(
+	                timeLog.getWorkOrder().getWorkOrderNumber());
+
+	        dto.setWorkOrderTitle(
+	                timeLog.getWorkOrder().getTitle());
+	    }
+
+	    return dto;
+	}
 
     // DTO -> Entity
     public static TimeLog toEntity(TimeLogDTO dto) {

@@ -43,7 +43,7 @@ public class SiteController {
     }
 
     // Get All Sites
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','CUSTOMER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<SiteDTO>>> getAllSites() {
 
@@ -60,7 +60,7 @@ public class SiteController {
     }
 
     // Get Site By Id
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','CUSTOMER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SiteDTO>> getSiteById(
             @PathVariable Long id) {

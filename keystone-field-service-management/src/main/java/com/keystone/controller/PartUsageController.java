@@ -15,7 +15,7 @@ import com.keystone.service.PartUsageService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/partusage")
+@RequestMapping("/api/part-usage")
 public class PartUsageController {
 
     private final PartUsageService service;
@@ -25,7 +25,7 @@ public class PartUsageController {
     }
 
     // Create Part Usage
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @PostMapping
     public ResponseEntity<ApiResponse<PartUsageDTO>> create(
             @Valid @RequestBody PartUsageDTO partUsageDTO) {
@@ -43,7 +43,7 @@ public class PartUsageController {
     }
 
     // Get All Part Usages
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<PartUsageDTO>>> getAll() {
 
@@ -60,7 +60,7 @@ public class PartUsageController {
     }
 
     // Get Part Usage By Id
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PartUsageDTO>> getById(
             @PathVariable Long id) {
@@ -78,7 +78,7 @@ public class PartUsageController {
     }
 
     // Update Part Usage
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PartUsageDTO>> update(
             @PathVariable Long id,
@@ -97,7 +97,7 @@ public class PartUsageController {
     }
 
     // Delete Part Usage
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long id) {

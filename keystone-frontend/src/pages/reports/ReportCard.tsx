@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Card, CardContent, Stack, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 
 interface ReportCardProps {
@@ -14,22 +8,20 @@ interface ReportCardProps {
   color: string;
 }
 
-const ReportCard = ({
-  title,
-  value,
-  icon,
-  color,
-}: ReportCardProps) => {
+const ReportCard = ({ title, value, icon, color }: ReportCardProps) => {
   return (
     <Card
-      elevation={3}
+      elevation={6}
       sx={{
-        borderRadius: 3,
+        borderRadius: 4,
         height: "100%",
-        transition: "0.3s",
+        transition: "0.25s ease",
+        cursor: "pointer",
+        overflow: "hidden",
+
         "&:hover": {
-          transform: "translateY(-5px)",
-          boxShadow: 8,
+          transform: "translateY(-4px)",
+          boxShadow: 10,
         },
       }}
     >
@@ -41,16 +33,14 @@ const ReportCard = ({
         >
           <Stack spacing={1}>
             <Typography
-              variant="body2"
+              variant="subtitle2"
               color="text.secondary"
+              fontWeight={600}
             >
               {title}
             </Typography>
 
-            <Typography
-              variant="h4"
-              fontWeight="bold"
-            >
+            <Typography variant="h4" fontWeight={700}>
               {value}
             </Typography>
           </Stack>
@@ -58,8 +48,9 @@ const ReportCard = ({
           <Avatar
             sx={{
               bgcolor: color,
-              width: 58,
-              height: 58,
+              width: 60,
+              height: 60,
+              boxShadow: 3,
             }}
           >
             {icon}

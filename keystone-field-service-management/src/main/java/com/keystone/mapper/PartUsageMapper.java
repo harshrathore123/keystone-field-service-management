@@ -8,29 +8,43 @@ import com.keystone.entity.WorkOrder;
 public class PartUsageMapper {
 
     // Entity -> DTO
-    public static PartUsageDTO toDTO(PartUsage partUsage) {
+	public static PartUsageDTO toDTO(PartUsage partUsage) {
 
-        if (partUsage == null) {
-            return null;
-        }
+	    if (partUsage == null) {
+	        return null;
+	    }
 
-        PartUsageDTO dto = new PartUsageDTO();
+	    PartUsageDTO dto = new PartUsageDTO();
 
-        dto.setId(partUsage.getId());
-        dto.setQuantityUsed(partUsage.getQuantityUsed());
-        dto.setUsedDate(partUsage.getUsedDate());
-        dto.setRemarks(partUsage.getRemarks());
+	    dto.setId(partUsage.getId());
+	    dto.setQuantityUsed(partUsage.getQuantityUsed());
+	    dto.setUsedDate(partUsage.getUsedDate());
+	    dto.setRemarks(partUsage.getRemarks());
 
-        if (partUsage.getWorkOrder() != null) {
-            dto.setWorkOrderId(partUsage.getWorkOrder().getId());
-        }
+	    if (partUsage.getWorkOrder() != null) {
 
-        if (partUsage.getPart() != null) {
-            dto.setPartId(partUsage.getPart().getId());
-        }
+	        dto.setWorkOrderId(partUsage.getWorkOrder().getId());
 
-        return dto;
-    }
+	        dto.setWorkOrderNumber(
+	                partUsage.getWorkOrder().getWorkOrderNumber());
+
+	        dto.setWorkOrderTitle(
+	                partUsage.getWorkOrder().getTitle());
+	    }
+
+	    if (partUsage.getPart() != null) {
+
+	        dto.setPartId(partUsage.getPart().getId());
+
+	        dto.setPartName(
+	                partUsage.getPart().getPartName());
+
+	        dto.setPartNumber(
+	                partUsage.getPart().getPartNumber());
+	    }
+
+	    return dto;
+	}
 
     // DTO -> Entity
     public static PartUsage toEntity(PartUsageDTO dto) {

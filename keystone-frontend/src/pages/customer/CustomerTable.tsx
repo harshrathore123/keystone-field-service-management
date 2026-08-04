@@ -8,6 +8,9 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Tooltip,
+  Typography,
+  Box,
 } from "@mui/material";
 
 import CustomPagination from "../../components/common/CustomPagination";
@@ -29,6 +32,7 @@ interface CustomerTableProps {
   ) => void;
   onRowsPerPageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
 function CustomerTable({
   customers,
   onEdit,
@@ -38,63 +42,185 @@ function CustomerTable({
   onPageChange,
   onRowsPerPageChange,
 }: CustomerTableProps) {
+  const paginatedCustomers = customers.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
+
+  const renderText = (text?: string, width = 180) => (
+    <Tooltip title={text || "-"}>
+      <Typography
+        noWrap
+        sx={{
+          maxWidth: width,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {text || "-"}
+      </Typography>
+    </Tooltip>
+  );
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Phone</TableCell>
-            <TableCell>Company</TableCell>
-            <TableCell>Address</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell align="center">Actions</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {customers
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((customer) => (
-              <TableRow key={customer.id} hover>
-                <TableCell>{customer.id}</TableCell>
-
-                <TableCell>{customer.customerName}</TableCell>
-
-                <TableCell>{customer.email}</TableCell>
-
-                <TableCell>{customer.phoneNumber}</TableCell>
-
-                <TableCell>{customer.companyName}</TableCell>
-
-                <TableCell>{customer.address}</TableCell>
-
-                <TableCell>
-                  <Chip
-                    label={customer.active ? "Active" : "Inactive"}
-                    color={customer.active ? "success" : "error"}
-                    size="small"
-                  />
+    <Paper
+      elevation={6}
+      sx={{
+        borderRadius: 3,
+        overflow: "hidden",
+      }}
+    >
+      <TableContainer
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+        }}
+      >
+        <Table
+          stickyHeader
+          sx={{
+            minWidth: 1200,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              {[
+                "ID",
+                "Name",
+                "Email",
+                "Phone",
+                "Company",
+                "Address",
+                "Status",
+                "Actions",
+              ].map((head) => (
+                <TableCell
+                  key={head}
+                  align={head === "Actions" ? "center" : "left"}
+                  sx={{
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    fontWeight: 700,
+                    whiteSpace: "nowrap",
+                    fontSize: 14,
+                  }}
+                >
+                  {head}
                 </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-                <TableCell align="center">
-                  <IconButton color="primary" onClick={() => onEdit(customer)}>
-                    <EditIcon />
-                  </IconButton>
-
-                  <IconButton
-                    color="error"
-                    onClick={() => onDelete(customer.id!)}
+          <TableBody>
+            {paginatedCustomers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <Box
+                    sx={{
+                      py: 5,
+                      textAlign: "center",
+                      color: "text.secondary",
+                      fontWeight: 600,
+                    }}
                   >
-                    <DeleteIcon />
-                  </IconButton>
+                    No Customers Found
+                  </Box>
                 </TableCell>
               </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+            ) : (
+              paginatedCustomers.map((customer) => (
+                <TableRow
+                  key={customer.id}
+                  hover
+                  sx={{
+                    transition: ".2s",
+                    "&:hover": {
+                      backgroundColor: "#f8f9fb",
+                    },
+                  }}
+                >
+                  <TableCell sx={{ minWidth: 70 }}>
+                    {customer.id}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 180 }}>
+                    {renderText(customer.customerName)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 240 }}>
+                    {renderText(customer.email, 230)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 150 }}>
+                    {renderText(customer.phoneNumber, 140)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 200 }}>
+                    {renderText(customer.companyName, 190)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 260 }}>
+                    {renderText(customer.address, 250)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 120 }}>
+                    <Chip
+                      label={customer.active ? "ACTIVE" : "INACTIVE"}
+                      color={customer.active ? "success" : "error"}
+                      sx={{
+                        fontWeight: 700,
+                        minWidth: 90,
+                      }}
+                    />
+                  </TableCell>
+
+                  <TableCell
+                    align="center"
+                    sx={{
+                      minWidth: 130,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Tooltip title="Edit Customer">
+                      <IconButton
+                        color="primary"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#E3F2FD",
+                          mr: 1,
+                          "&:hover": {
+                            backgroundColor: "#BBDEFB",
+                          },
+                        }}
+                        onClick={() => onEdit(customer)}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Delete Customer">
+                      <IconButton
+                        color="error"
+                        size="small"
+                        sx={{
+                          backgroundColor: "#FFEBEE",
+                          "&:hover": {
+                            backgroundColor: "#FFCDD2",
+                          },
+                        }}
+                        onClick={() => onDelete(customer.id!)}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <CustomPagination
         count={customers.length}
@@ -103,7 +229,7 @@ function CustomerTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
       />
-    </TableContainer>
+    </Paper>
   );
 }
 

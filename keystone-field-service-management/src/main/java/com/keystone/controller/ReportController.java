@@ -23,7 +23,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<ReportDTO>> getReportSummary() {
 

@@ -7,4 +7,5 @@ export interface Site {
   postalCode: string;
   active: boolean;
   customerId: number;
+  customerName?: string;
 }

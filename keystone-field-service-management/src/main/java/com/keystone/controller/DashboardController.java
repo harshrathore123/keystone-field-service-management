@@ -23,7 +23,7 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<DashboardDTO>> getDashboardSummary() {
 

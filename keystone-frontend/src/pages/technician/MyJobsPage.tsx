@@ -112,13 +112,28 @@ useEffect(() => {
   return (
     <DashboardLayout>
       <Box mb={3}>
-        <Typography variant="h4" fontWeight="bold">
-          My Assigned Jobs
-        </Typography>
+        <Box mb={3}>
+  <Typography variant="h4" fontWeight="bold">
+    My Assigned Jobs
+  </Typography>
+
+  <Typography
+    variant="body2"
+    color="text.secondary"
+  >
+    View and manage your assigned work orders
+  </Typography>
+</Box>
       </Box>
 
       {loading ? (
-        <CircularProgress />
+      <Box
+  display="flex"
+  justifyContent="center"
+  py={8}
+>
+  <CircularProgress />
+</Box>
       ) : (
         <MyJobsTable
           workOrders={workOrders}

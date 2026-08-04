@@ -43,4 +43,10 @@ public class WorkOrderDTO {
 
     // Technician can be assigned later
     private Long assignedUserId;
+    
+    private String customerName;
+
+    private String siteName;
+
+    private String assignedTechnicianName;
 }

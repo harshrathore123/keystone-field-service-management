@@ -22,33 +22,20 @@ export const getPartById = async (id: number): Promise<Part> => {
 };
 
 // Create Part
-export const createPart = async (
-  part: Part
-): Promise<Part> => {
-  const response = await api.post<ApiResponse<Part>>(
-    "/parts",
-    part
-  );
+export const createPart = async (part: Part): Promise<Part> => {
+  const response = await api.post<ApiResponse<Part>>("/parts", part);
 
   return response.data.data;
 };
 
 // Update Part
-export const updatePart = async (
-  id: number,
-  part: Part
-): Promise<Part> => {
-  const response = await api.put<ApiResponse<Part>>(
-    `/parts/${id}`,
-    part
-  );
+export const updatePart = async (id: number, part: Part): Promise<Part> => {
+  const response = await api.put<ApiResponse<Part>>(`/parts/${id}`, part);
 
   return response.data.data;
 };
 
 // Delete Part
-export const deletePart = async (
-  id: number
-): Promise<void> => {
+export const deletePart = async (id: number): Promise<void> => {
   await api.delete(`/parts/${id}`);
 };

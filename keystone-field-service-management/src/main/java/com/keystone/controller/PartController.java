@@ -25,7 +25,7 @@ public class PartController {
     }
 
     // Create Part
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @PostMapping
     public ResponseEntity<ApiResponse<PartDTO>> createPart(
             @Valid @RequestBody PartDTO partDTO) {
@@ -43,7 +43,7 @@ public class PartController {
     }
 
     // Get All Parts
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','TECHNICIAN')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<PartDTO>>> getAllParts() {
 
@@ -60,7 +60,7 @@ public class PartController {
     }
 
     // Get Part By Id
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER','TECHNICIAN')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PartDTO>> getPartById(
             @PathVariable Long id) {
@@ -78,7 +78,7 @@ public class PartController {
     }
 
     // Update Part
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PartDTO>> updatePart(
             @PathVariable Long id,
@@ -97,7 +97,7 @@ public class PartController {
     }
 
     // Delete Part
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePart(
             @PathVariable Long id) {

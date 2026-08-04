@@ -1,4 +1,5 @@
 import {
+  Box,
   Chip,
   IconButton,
   Paper,
@@ -8,6 +9,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -41,100 +44,191 @@ function SiteTable({
   onPageChange,
   onRowsPerPageChange,
 }: SiteTableProps) {
+  const paginatedSites = sites.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
+
+  const renderText = (text?: string, width = 180) => (
+    <Tooltip title={text || "-"}>
+      <Typography
+        noWrap
+        sx={{
+          maxWidth: width,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {text || "-"}
+      </Typography>
+    </Tooltip>
+  );
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <strong>ID</strong>
-            </TableCell>
+    <Paper
+      elevation={6}
+      sx={{
+        borderRadius: 3,
+        overflow: "hidden",
+      }}
+    >
+      <TableContainer
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+        }}
+      >
+        <Table
+          stickyHeader
+          sx={{
+            minWidth: 1350,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              {[
+                "ID",
+                "Site Name",
+                "Address",
+                "City",
+                "State",
+                "Postal Code",
+                "Customer",
+                "Status",
+                "Actions",
+              ].map((head) => (
+                <TableCell
+                  key={head}
+                  align={head === "Actions" ? "center" : "left"}
+                  sx={{
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {head}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-            <TableCell>
-              <strong>Site Name</strong>
-            </TableCell>
+          <TableBody>
+            {paginatedSites.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={9}>
+                  <Box
+                    sx={{
+                      py: 5,
+                      textAlign: "center",
+                      color: "text.secondary",
+                      fontWeight: 600,
+                    }}
+                  >
+                    No Sites Found
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ) : (
+              paginatedSites.map((site) => (
+                <TableRow
+                  key={site.id}
+                  hover
+                  sx={{
+                    transition: ".2s",
+                    "&:hover": {
+                      backgroundColor: "#f8f9fb",
+                    },
+                  }}
+                >
+                  <TableCell sx={{ minWidth: 70 }}>
+                    {site.id}
+                  </TableCell>
 
-            <TableCell>
-              <strong>Address</strong>
-            </TableCell>
+                  <TableCell sx={{ minWidth: 180 }}>
+                    {renderText(site.siteName)}
+                  </TableCell>
 
-            <TableCell>
-              <strong>City</strong>
-            </TableCell>
+                  <TableCell sx={{ minWidth: 260 }}>
+                    {renderText(site.address, 250)}
+                  </TableCell>
 
-            <TableCell>
-              <strong>State</strong>
-            </TableCell>
+                  <TableCell sx={{ minWidth: 140 }}>
+                    {renderText(site.city, 130)}
+                  </TableCell>
 
-            <TableCell>
-              <strong>Postal Code</strong>
-            </TableCell>
+                  <TableCell sx={{ minWidth: 140 }}>
+                    {renderText(site.state, 130)}
+                  </TableCell>
 
-            <TableCell>
-              <strong>Customer ID</strong>
-            </TableCell>
+                  <TableCell sx={{ minWidth: 140 }}>
+                    {renderText(site.postalCode, 120)}
+                  </TableCell>
 
-            <TableCell>
-              <strong>Status</strong>
-            </TableCell>
+                  <TableCell sx={{ minWidth: 220 }}>
+                    {renderText(site.customerName, 210)}
+                  </TableCell>
 
-            <TableCell align="center">
-              <strong>Actions</strong>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {sites.length > 0 ? (
-            sites
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((site) => (
-                <TableRow key={site.id}>
-                  <TableCell>{site.id}</TableCell>
-
-                  <TableCell>{site.siteName}</TableCell>
-
-                  <TableCell>{site.address}</TableCell>
-
-                  <TableCell>{site.city}</TableCell>
-
-                  <TableCell>{site.state}</TableCell>
-
-                  <TableCell>{site.postalCode}</TableCell>
-
-                  <TableCell>{site.customerId}</TableCell>
-
-                  <TableCell>
+                  <TableCell sx={{ minWidth: 120 }}>
                     <Chip
-                      label={site.active ? "Active" : "Inactive"}
+                      label={site.active ? "ACTIVE" : "INACTIVE"}
                       color={site.active ? "success" : "error"}
-                      size="small"
+                      sx={{
+                        minWidth: 90,
+                        fontWeight: 700,
+                      }}
                     />
                   </TableCell>
 
-                  <TableCell align="center">
-                    <IconButton color="primary" onClick={() => onEdit(site)}>
-                      <EditIcon />
-                    </IconButton>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      minWidth: 130,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Tooltip title="Edit Site">
+                      <IconButton
+                        color="primary"
+                        size="small"
+                        sx={{
+                          bgcolor: "#E3F2FD",
+                          mr: 1,
+                          "&:hover": {
+                            bgcolor: "#BBDEFB",
+                          },
+                        }}
+                        onClick={() => onEdit(site)}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
 
-                    <IconButton
-                      color="error"
-                      onClick={() => onDelete(site.id!)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    <Tooltip title="Delete Site">
+                      <IconButton
+                        color="error"
+                        size="small"
+                        sx={{
+                          bgcolor: "#FFEBEE",
+                          "&:hover": {
+                            bgcolor: "#FFCDD2",
+                          },
+                        }}
+                        onClick={() => onDelete(site.id!)}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={9} align="center">
-                No Sites Found
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       <CustomPagination
         count={sites.length}
         page={page}
@@ -142,7 +236,7 @@ function SiteTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
       />
-    </TableContainer>
+    </Paper>
   );
 }
 

@@ -5,11 +5,15 @@ import {
   Button,
   FormControlLabel,
   Grid,
+  MenuItem,
   Switch,
   TextField,
 } from "@mui/material";
 
 import type { Site } from "../../types/Site";
+import type { Customer } from "../../types/Customer";
+
+import { getAllCustomers } from "../../services/CustomerService";
 
 interface SiteFormProps {
   site?: Site | null;
@@ -30,15 +34,46 @@ const initialState: Site = {
 function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
   const [formData, setFormData] = useState<Site>(initialState);
 
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  const [errors, setErrors] = useState({
+    siteName: "",
+    address: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    customerId: "",
+  });
+
   useEffect(() => {
-    void Promise.resolve().then(() => {
-      if (site) {
-        setFormData(site);
-      } else {
-        setFormData(initialState);
-      }
-    });
+    const id = setTimeout(() => {
+      setFormData(site ?? initialState);
+
+      setErrors({
+        siteName: "",
+        address: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        customerId: "",
+      });
+    }, 0);
+
+    return () => clearTimeout(id);
   }, [site]);
+
+  useEffect(() => {
+    const loadCustomers = async () => {
+      try {
+        const data = await getAllCustomers();
+        setCustomers(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void loadCustomers();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,6 +81,11 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
     setFormData((prev) => ({
       ...prev,
       [name]: name === "customerId" ? Number(value) : value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
@@ -58,11 +98,40 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newErrors = {
+      siteName: formData.siteName.trim() === "" ? "Site Name is required" : "",
+
+      address: formData.address.trim() === "" ? "Address is required" : "",
+
+      city: formData.city.trim() === "" ? "City is required" : "",
+
+      state: formData.state.trim() === "" ? "State is required" : "",
+
+      postalCode: /^\d{6}$/.test(formData.postalCode)
+        ? ""
+        : "Enter valid 6 digit postal code",
+
+      customerId: formData.customerId > 0 ? "" : "Please select customer",
+    };
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((error) => error !== "")) {
+      return;
+    }
+
     onSave(formData);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        p: 3,
+      }}
+    >
       <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
           <TextField
@@ -71,7 +140,8 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
             name="siteName"
             value={formData.siteName}
             onChange={handleChange}
-            required
+            error={!!errors.siteName}
+            helperText={errors.siteName}
           />
         </Grid>
 
@@ -82,7 +152,8 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            required
+            error={!!errors.address}
+            helperText={errors.address}
           />
         </Grid>
 
@@ -93,7 +164,8 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
             name="city"
             value={formData.city}
             onChange={handleChange}
-            required
+            error={!!errors.city}
+            helperText={errors.city}
           />
         </Grid>
 
@@ -104,7 +176,8 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
             name="state"
             value={formData.state}
             onChange={handleChange}
-            required
+            error={!!errors.state}
+            helperText={errors.state}
           />
         </Grid>
 
@@ -115,20 +188,31 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
             name="postalCode"
             value={formData.postalCode}
             onChange={handleChange}
-            required
+            error={!!errors.postalCode}
+            helperText={errors.postalCode}
+            inputProps={{
+              maxLength: 6,
+            }}
           />
         </Grid>
 
         <Grid size={{ xs: 6 }}>
           <TextField
+            select
             fullWidth
-            type="number"
-            label="Customer ID"
+            label="Customer"
             name="customerId"
             value={formData.customerId}
             onChange={handleChange}
-            required
-          />
+            error={!!errors.customerId}
+            helperText={errors.customerId}
+          >
+            {customers.map((customer) => (
+              <MenuItem key={customer.id} value={customer.id}>
+                {customer.customerName} ({customer.companyName})
+              </MenuItem>
+            ))}
+          </TextField>
         </Grid>
 
         <Grid size={{ xs: 12 }}>
@@ -142,7 +226,7 @@ function SiteForm({ site, onSave, onCancel }: SiteFormProps) {
 
         <Grid size={{ xs: 12 }}>
           <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button variant="outlined" onClick={onCancel}>
+            <Button variant="outlined" color="inherit" onClick={onCancel}>
               Cancel
             </Button>
 

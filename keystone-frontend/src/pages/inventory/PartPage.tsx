@@ -34,8 +34,9 @@ function PartPage() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] =
-    useState<"success" | "error">("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success",
+  );
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [partToDelete, setPartToDelete] = useState<number | null>(null);
@@ -153,14 +154,26 @@ function PartPage() {
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" fontWeight="bold">
-          Inventory
-        </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+            Inventory
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary">
+            Manage inventory items and stock availability
+          </Typography>
+        </Box>
 
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={handleAdd}
+          sx={{
+            borderRadius: 3,
+            px: 3,
+            textTransform: "none",
+            fontWeight: 600,
+          }}
         >
           Add Part
         </Button>
@@ -177,8 +190,10 @@ function PartPage() {
         />
       </Box>
 
-            {loading ? (
-        <CircularProgress />
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" py={8}>
+          <CircularProgress />
+        </Box>
       ) : (
         <PartTable
           parts={filteredParts}
@@ -196,6 +211,11 @@ function PartPage() {
         onClose={() => setOpen(false)}
         maxWidth="md"
         fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+          },
+        }}
       >
         <PartForm
           part={selectedPart}

@@ -36,9 +36,9 @@ function LoginPage() {
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<
-    "success" | "error"
-  >("success");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success",
+  );
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -57,6 +57,11 @@ function LoginPage() {
       });
 
       saveToken(response.token, response.role);
+      localStorage.setItem("firstName", response.firstName);
+      localStorage.setItem("lastName", response.lastName);
+      localStorage.setItem("email", response.email);
+      localStorage.setItem("phone", response.phoneNumber);
+      localStorage.setItem("role", response.role);
 
       setSnackbarSeverity("success");
       setSnackbarMessage(response.message);
@@ -65,10 +70,14 @@ function LoginPage() {
       setTimeout(() => {
         const role = response.role;
 
-        if (role === "TECHNICIAN") {
-          navigate("/technician-dashboard", { replace: true });
-        } else {
+        if (role === "MANAGER") {
           navigate("/dashboard", { replace: true });
+        } else if (role === "DISPATCHER") {
+          navigate("/dashboard", { replace: true });
+        } else if (role === "TECHNICIAN") {
+          navigate("/technician-dashboard", { replace: true });
+        } else if (role === "CUSTOMER") {
+          navigate("/customer", { replace: true });
         }
       }, 1000);
     } catch (error) {
@@ -77,7 +86,7 @@ function LoginPage() {
       if (axios.isAxiosError(error)) {
         setSnackbarSeverity("error");
         setSnackbarMessage(
-          error.response?.data?.message ?? "Invalid email or password."
+          error.response?.data?.message ?? "Invalid email or password.",
         );
         setSnackbarOpen(true);
       }
@@ -127,9 +136,7 @@ function LoginPage() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
+                    <IconButton onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -142,10 +149,7 @@ function LoginPage() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <FormControlLabel
-                control={<Checkbox />}
-                label="Remember Me"
-              />
+              <FormControlLabel control={<Checkbox />} label="Remember Me" />
 
               <Link href="#" underline="hover">
                 Forgot Password?
@@ -169,12 +173,10 @@ function LoginPage() {
                 borderRadius: 3,
                 fontWeight: "bold",
                 fontSize: 16,
-                background:
-                  "linear-gradient(90deg,#1565C0,#26A69A)",
+                background: "linear-gradient(90deg,#1565C0,#26A69A)",
 
                 "&:hover": {
-                  background:
-                    "linear-gradient(90deg,#0D47A1,#00897B)",
+                  background: "linear-gradient(90deg,#0D47A1,#00897B)",
                 },
               }}
             >

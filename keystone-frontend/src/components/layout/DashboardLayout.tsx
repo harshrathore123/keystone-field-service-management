@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { ReactNode } from "react";
 import { Box } from "@mui/material";
 
@@ -8,18 +9,19 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-function DashboardLayout({
-  children,
-}: DashboardLayoutProps) {
+function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
     <Box
       sx={{
         display: "flex",
         minHeight: "100vh",
+        alignItems: "stretch",
         bgcolor: "#F4F7FC",
       }}
     >
-      <Sidebar />
+      <Sidebar collapsed={collapsed} />
 
       <Box
         component="main"
@@ -30,13 +32,13 @@ function DashboardLayout({
           overflow: "hidden",
         }}
       >
-        <TopNavbar />
+        <TopNavbar collapsed={collapsed} setCollapsed={setCollapsed} />
 
         <Box
           sx={{
             flex: 1,
             p: 3,
-            overflowY: "auto",
+            overflowY: "visible",
           }}
         >
           {children}

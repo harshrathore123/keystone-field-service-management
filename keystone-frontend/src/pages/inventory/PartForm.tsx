@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import {
   Box,
   Button,
@@ -26,28 +27,34 @@ const initialState: Part = {
   active: true,
 };
 
-function PartForm({
-  part,
-  onSave,
-  onCancel,
-}: PartFormProps) {
-
+function PartForm({ part, onSave, onCancel }: PartFormProps) {
   const [formData, setFormData] = useState<Part>(initialState);
 
-  useEffect(() => {
-  void Promise.resolve().then(() => {
-    if (part) {
-      setFormData(part);
-    } else {
-      setFormData(initialState);
-    }
+  const [errors, setErrors] = useState({
+    partName: "",
+    partNumber: "",
+    category: "",
+    quantityInStock: "",
+    unitPrice: "",
   });
-}, [part]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setFormData(part ?? initialState);
 
+      setErrors({
+        partName: "",
+        partNumber: "",
+        category: "",
+        quantityInStock: "",
+        unitPrice: "",
+      });
+    }, 0);
+
+    return () => clearTimeout(id);
+  }, [part]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     setFormData((prev) => ({
@@ -56,18 +63,33 @@ function PartForm({
         name === "quantityInStock"
           ? Number(value)
           : name === "unitPrice"
-          ? Number(value)
-          : value,
+            ? Number(value)
+            : value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
   const handleSubmit = () => {
-    if (
-      !formData.partName.trim() ||
-      !formData.partNumber.trim() ||
-      !formData.category.trim()
-    ) {
-      alert("Please fill all required fields.");
+    const newErrors = {
+      partName: formData.partName.trim() === "" ? "Part Name is required" : "",
+
+      partNumber:
+        formData.partNumber.trim() === "" ? "Part Number is required" : "",
+
+      category: formData.category.trim() === "" ? "Category is required" : "",
+
+      quantityInStock: formData.quantityInStock >= 0 ? "" : "Invalid Quantity",
+
+      unitPrice: formData.unitPrice >= 0 ? "" : "Invalid Price",
+    };
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((error) => error !== "")) {
       return;
     }
 
@@ -76,23 +98,25 @@ function PartForm({
 
   return (
     <Box p={4}>
+      <Box mb={3}>
+        <Typography variant="h5" fontWeight={700}>
+          {part ? "Update Part" : "Add Part"}
+        </Typography>
 
-      <Typography
-        variant="h5"
-        fontWeight="bold"
-        mb={3}
-      >
-        {part ? "Update Part" : "Add Part"}
-      </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Manage inventory details and stock information
+        </Typography>
+      </Box>
 
-      <Stack spacing={3}>
-
+      <Stack spacing={2.5}>
         <TextField
           label="Part Name"
           name="partName"
           fullWidth
           value={formData.partName}
           onChange={handleChange}
+          error={!!errors.partName}
+          helperText={errors.partName}
         />
 
         <TextField
@@ -101,6 +125,8 @@ function PartForm({
           fullWidth
           value={formData.partNumber}
           onChange={handleChange}
+          error={!!errors.partNumber}
+          helperText={errors.partNumber}
         />
 
         <TextField
@@ -109,6 +135,8 @@ function PartForm({
           fullWidth
           value={formData.category}
           onChange={handleChange}
+          error={!!errors.category}
+          helperText={errors.category}
         />
 
         <TextField
@@ -118,6 +146,11 @@ function PartForm({
           fullWidth
           value={formData.quantityInStock}
           onChange={handleChange}
+          error={!!errors.quantityInStock}
+          helperText={errors.quantityInStock}
+          inputProps={{
+            min: 0,
+          }}
         />
 
         <TextField
@@ -127,6 +160,12 @@ function PartForm({
           fullWidth
           value={formData.unitPrice}
           onChange={handleChange}
+          error={!!errors.unitPrice}
+          helperText={errors.unitPrice}
+          inputProps={{
+            min: 0,
+            step: "0.01",
+          }}
         />
 
         <FormControlLabel
@@ -144,28 +183,16 @@ function PartForm({
           label="Active"
         />
 
-        <Stack
-          direction="row"
-          spacing={2}
-          justifyContent="flex-end"
-        >
-          <Button
-            variant="outlined"
-            onClick={onCancel}
-          >
+        <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Button variant="outlined" color="inherit" onClick={onCancel}>
             Cancel
           </Button>
 
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-          >
+          <Button variant="contained" onClick={handleSubmit}>
             {part ? "Update" : "Save"}
           </Button>
         </Stack>
-
       </Stack>
-
     </Box>
   );
 }

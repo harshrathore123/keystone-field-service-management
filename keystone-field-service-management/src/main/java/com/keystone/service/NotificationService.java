@@ -17,5 +17,9 @@ public interface NotificationService {
     NotificationDTO markAsRead(Long id);
 
     void deleteNotification(Long id);
+    
+    long getUnreadNotificationCount();
+    
+    List<NotificationDTO> getMyNotifications();
 
 }

@@ -27,7 +27,7 @@ const ReportExcel = ({ report }: Props) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Keystone Report");
 
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
@@ -36,7 +36,7 @@ const ReportExcel = ({ report }: Props) => {
 
     saveAs(
       new Blob([excelBuffer]),
-      "Keystone_Report.xlsx"
+      `Keystone_Report_${new Date().toISOString().split("T")[0]}.xlsx`,
     );
   };
 
@@ -46,6 +46,16 @@ const ReportExcel = ({ report }: Props) => {
       color="success"
       startIcon={<GridOnIcon />}
       onClick={exportExcel}
+      sx={{
+        borderRadius: 3,
+        px: 3,
+        textTransform: "none",
+        fontWeight: 600,
+        boxShadow: 3,
+        "&:hover": {
+          boxShadow: 6,
+        },
+      }}
     >
       Export Excel
     </Button>

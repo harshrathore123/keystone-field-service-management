@@ -152,6 +152,8 @@ public class CustomerPortalServiceImpl implements CustomerPortalService {
 
 	@Override
 	public List<WorkOrderDTO> getMyRequests() {
+		
+		System.out.println("====== GET MY REQUESTS CALLED ======");
 
 		// Step 1 - Get Logged-in User Email
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -161,8 +163,17 @@ public class CustomerPortalServiceImpl implements CustomerPortalService {
 				.orElseThrow(() -> new RuntimeException("Customer not found with email : " + email));
 		// Step 3 - Fetch Customer Work Orders
 		List<WorkOrder> workOrders = workOrderRepository.findByCustomer(customer);
+		
+		System.out.println("EMAIL = " + email);
+
+		System.out.println("CUSTOMER ID = " + customer.getId());
+
+		System.out.println("WORK ORDER SIZE = " + workOrders.size());
+		
 		// Step 4 - Convert Entity to DTO
 		return workOrders.stream().map(WorkOrderMapper::toDTO).collect(Collectors.toList());
+		
+		
 	}
 
 	@Override

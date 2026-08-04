@@ -166,6 +166,9 @@ function TechnicianPage() {
       >
         <Typography variant="h4" fontWeight="bold">
           Technicians
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            Manage technician profiles and assignments
+          </Typography>
         </Typography>
 
         <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
@@ -176,7 +179,7 @@ function TechnicianPage() {
       <Box mb={3}>
         <SearchBar
           value={search}
-          placeholder="Search Technician..."
+          placeholder="Search technicians by name, email or phone..."
           onChange={(value) => {
             setSearch(value);
             setPage(0);

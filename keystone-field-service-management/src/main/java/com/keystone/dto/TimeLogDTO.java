@@ -19,6 +19,9 @@ public class TimeLogDTO {
 
     private String workDescription;
 
-    // Relationship ID
     private Long workOrderId;
+
+    // Display Fields
+    private String workOrderNumber;
+    private String workOrderTitle;
 }

@@ -1,4 +1,5 @@
 import {
+  Box,
   Chip,
   IconButton,
   Paper,
@@ -8,6 +9,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -39,65 +42,196 @@ function TechnicianTable({
   onPageChange,
   onRowsPerPageChange,
 }: TechnicianTableProps) {
+  const paginatedTechnicians = technicians.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage,
+  );
+
+  const renderText = (text?: string, width = 180) => (
+    <Tooltip title={text || "-"}>
+      <Typography
+        noWrap
+        sx={{
+          maxWidth: width,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {text || "-"}
+      </Typography>
+    </Tooltip>
+  );
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Phone</TableCell>
-            <TableCell>Skill</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell align="center">Actions</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {technicians
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((technician) => (
-              <TableRow key={technician.id} hover>
-                <TableCell>{technician.id}</TableCell>
-
-                <TableCell>
-                  {technician.firstName} {technician.lastName}
+    <Paper
+      elevation={6}
+      sx={{
+        borderRadius: 3,
+        overflow: "hidden",
+      }}
+    >
+      <TableContainer
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+        }}
+      >
+        <Table
+          stickyHeader
+          sx={{
+            minWidth: 1200,
+          }}
+        >
+          <TableHead>
+            <TableRow>
+              {[
+                "ID",
+                "Name",
+                "Email",
+                "Phone",
+                "Role",
+                "Status",
+                "Actions",
+              ].map((head) => (
+                <TableCell
+                  key={head}
+                  align={head === "Actions" ? "center" : "left"}
+                  sx={{
+                    backgroundColor: "#1976d2",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {head}
                 </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-                <TableCell>{technician.email}</TableCell>
-
-                <TableCell>{technician.phoneNumber}</TableCell>
-
-                <TableCell>{technician.role}</TableCell>
-
-                <TableCell>
-                  <Chip
-                    label={technician.active ? "Active" : "Inactive"}
-                    color={technician.active ? "success" : "error"}
-                    size="small"
-                  />
-                </TableCell>
-
-                <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => onEdit(technician)}
+          <TableBody>
+            {paginatedTechnicians.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7}>
+                  <Box
+                    sx={{
+                      py: 5,
+                      textAlign: "center",
+                      color: "text.secondary",
+                      fontWeight: 600,
+                    }}
                   >
-                    <EditIcon />
-                  </IconButton>
-
-                  <IconButton
-                    color="error"
-                    onClick={() => onDelete(technician.id!)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                    No Technicians Found
+                  </Box>
                 </TableCell>
               </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+            ) : (
+              paginatedTechnicians.map((technician) => (
+                <TableRow
+                  key={technician.id}
+                  hover
+                  sx={{
+                    transition: ".2s",
+                    "&:hover": {
+                      backgroundColor: "#f8f9fb",
+                    },
+                  }}
+                >
+                  <TableCell sx={{ minWidth: 70 }}>
+                    {technician.id}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 200 }}>
+                    {renderText(
+                      `${technician.firstName} ${technician.lastName}`,
+                      190,
+                    )}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 260 }}>
+                    {renderText(technician.email, 250)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 150 }}>
+                    {renderText(technician.phoneNumber, 140)}
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 130 }}>
+                    <Chip
+                      label={technician.role}
+                      color={
+                        technician.role === "ADMIN"
+                          ? "secondary"
+                          : "primary"
+                      }
+                      size="small"
+                      sx={{
+                        minWidth: 90,
+                        fontWeight: 700,
+                      }}
+                    />
+                  </TableCell>
+
+                  <TableCell sx={{ minWidth: 120 }}>
+                    <Chip
+                      label={technician.active ? "ACTIVE" : "INACTIVE"}
+                      color={technician.active ? "success" : "error"}
+                      size="small"
+                      sx={{
+                        minWidth: 90,
+                        fontWeight: 700,
+                      }}
+                    />
+                  </TableCell>
+
+                  <TableCell
+                    align="center"
+                    sx={{
+                      minWidth: 130,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Tooltip title="Edit Technician">
+                      <IconButton
+                        color="primary"
+                        size="small"
+                        sx={{
+                          bgcolor: "#E3F2FD",
+                          mr: 1,
+                          "&:hover": {
+                            bgcolor: "#BBDEFB",
+                          },
+                        }}
+                        onClick={() => onEdit(technician)}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Delete Technician">
+                      <IconButton
+                        color="error"
+                        size="small"
+                        sx={{
+                          bgcolor: "#FFEBEE",
+                          "&:hover": {
+                            bgcolor: "#FFCDD2",
+                          },
+                        }}
+                        onClick={() => onDelete(technician.id!)}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <CustomPagination
         count={technicians.length}
@@ -106,7 +240,7 @@ function TechnicianTable({
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
       />
-    </TableContainer>
+    </Paper>
   );
 }
 

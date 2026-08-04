@@ -3,6 +3,7 @@ package com.keystone.service;
 import java.util.List;
 
 import com.keystone.dto.AuthResponse;
+import com.keystone.dto.ChangePasswordRequest;
 import com.keystone.dto.CreateTechnicianRequest;
 import com.keystone.dto.LoginRequest;
 import com.keystone.dto.RegisterRequest;
@@ -32,5 +33,7 @@ public interface UserService {
 	void deleteTechnician(Long id);
 
 	UserDTO createTechnician(CreateTechnicianRequest request);
+	
+	void changePassword(ChangePasswordRequest request);
 
 }

@@ -31,7 +31,7 @@ public class SiteDTO {
     @NotNull(message = "Active status is required")
     private Boolean active;
 
-    @NotNull(message = "Customer ID is required")
     private Long customerId;
+    private String customerName;
 
 }

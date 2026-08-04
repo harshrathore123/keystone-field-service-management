@@ -17,8 +17,13 @@ public class PartUsageDTO {
 
     private String remarks;
 
-    // Relationship IDs
     private Long workOrderId;
-
     private Long partId;
+
+    // Display Fields
+    private String workOrderNumber;
+    private String workOrderTitle;
+
+    private String partName;
+    private String partNumber;
 }

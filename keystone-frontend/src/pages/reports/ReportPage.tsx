@@ -29,13 +29,14 @@ import ReportExport from "./ReportExport";
 import ReportExcel from "./ReportExcel";
 import QuickStats from "./QuickStats";
 import RecentActivity from "./RecentActivity";
+import DashboardLayout from "../../components/layout/DashboardLayout";
 
 const ReportPage = () => {
   const [report, setReport] = useState<ReportSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadReport = async () => {
+    const fetchReport = async () => {
       try {
         const data = await ReportService.getReportSummary();
         setReport(data);
@@ -46,146 +47,185 @@ const ReportPage = () => {
       }
     };
 
-    loadReport();
+    void fetchReport();
   }, []);
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" mt={5}>
-        <CircularProgress />
-      </Box>
+      <DashboardLayout>
+        <Box display="flex" justifyContent="center" alignItems="center" py={10}>
+          <CircularProgress />
+        </Box>
+      </DashboardLayout>
     );
   }
 
   if (!report) {
-    return <Typography color="error">Failed to load report.</Typography>;
+    return (
+      <DashboardLayout>
+        <Box py={10} textAlign="center">
+          <Typography variant="h5">Unable to load Reports</Typography>
+
+          <Typography color="text.secondary">
+            Please try again later.
+          </Typography>
+        </Box>
+      </DashboardLayout>
+    );
   }
 
   return (
-    <Container maxWidth={false} sx={{ mt: 3 }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
+    <DashboardLayout>
+      <Container
+        maxWidth={false}
+        disableGutters
+        sx={{
+          mt: 3,
+          px: 1,
+        }}
       >
-        <Typography variant="h4" fontWeight="bold">
-          Reports Dashboard
-        </Typography>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
+          <Box>
+            <Typography variant="h4" fontWeight="bold">
+              Reports
+            </Typography>
 
-        <Box display="flex" gap={2}>
-          <ReportExport report={report} />
-          <ReportExcel report={report} />
+            <Typography variant="body2" color="text.secondary">
+              Monitor system performance and business insights
+            </Typography>
+          </Box>
+
+          <Box display="flex" gap={2} flexWrap="wrap">
+            <ReportExport report={report} />
+            <ReportExcel report={report} />
+          </Box>
         </Box>
-      </Box>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="Customers"
-            value={report.totalCustomers}
-            icon={<PeopleIcon />}
-            color="#1976d2"
-          />
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="Customers"
+              value={report.totalCustomers}
+              icon={<PeopleIcon />}
+              color="#1976d2"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="Sites"
+              value={report.totalSites}
+              icon={<BusinessIcon />}
+              color="#2e7d32"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="Technicians"
+              value={report.totalTechnicians}
+              icon={<EngineeringIcon />}
+              color="#ed6c02"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="Work Orders"
+              value={report.totalWorkOrders}
+              icon={<AssignmentIcon />}
+              color="#7b1fa2"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="New"
+              value={report.newWorkOrders}
+              icon={<FiberNewIcon />}
+              color="#0288d1"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="Assigned"
+              value={report.assignedWorkOrders}
+              icon={<AssignmentIndIcon />}
+              color="#fb8c00"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="In Progress"
+              value={report.inProgressWorkOrders}
+              icon={<BuildCircleIcon />}
+              color="#8e24aa"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <ReportCard
+              title="Completed"
+              value={report.completedWorkOrders}
+              icon={<CheckCircleIcon />}
+              color="#43a047"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <ReportCard
+              title="On Hold"
+              value={report.onHoldWorkOrders}
+              icon={<PauseCircleIcon />}
+              color="#ff9800"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <ReportCard
+              title="Closed"
+              value={report.closedWorkOrders}
+              icon={<LockIcon />}
+              color="#546e7a"
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <ReportCard
+              title="Cancelled"
+              value={report.cancelledWorkOrders}
+              icon={<CancelIcon />}
+              color="#e53935"
+            />
+          </Grid>
         </Grid>
+        <Box mt={4}>
+          <ReportChart report={report} />
+        </Box>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="Sites"
-            value={report.totalSites}
-            icon={<BusinessIcon />}
-            color="#2e7d32"
-          />
-        </Grid>
+        <Box mt={4}>
+          <StatusTable report={report} />
+        </Box>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="Technicians"
-            value={report.totalTechnicians}
-            icon={<EngineeringIcon />}
-            color="#ed6c02"
-          />
-        </Grid>
+        <Box mt={4}>
+          <ProgressCards report={report} />
+        </Box>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="Work Orders"
-            value={report.totalWorkOrders}
-            icon={<AssignmentIcon />}
-            color="#7b1fa2"
-          />
-        </Grid>
+        <Box mt={4}>
+          <QuickStats report={report} />
+        </Box>
 
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="New"
-            value={report.newWorkOrders}
-            icon={<FiberNewIcon />}
-            color="#0288d1"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="Assigned"
-            value={report.assignedWorkOrders}
-            icon={<AssignmentIndIcon />}
-            color="#fb8c00"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="In Progress"
-            value={report.inProgressWorkOrders}
-            icon={<BuildCircleIcon />}
-            color="#8e24aa"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <ReportCard
-            title="Completed"
-            value={report.completedWorkOrders}
-            icon={<CheckCircleIcon />}
-            color="#43a047"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <ReportCard
-            title="On Hold"
-            value={report.onHoldWorkOrders}
-            icon={<PauseCircleIcon />}
-            color="#ff9800"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <ReportCard
-            title="Closed"
-            value={report.closedWorkOrders}
-            icon={<LockIcon />}
-            color="#546e7a"
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-          <ReportCard
-            title="Cancelled"
-            value={report.cancelledWorkOrders}
-            icon={<CancelIcon />}
-            color="#e53935"
-          />
-        </Grid>
-      </Grid>
-
-      <ReportChart report={report} />
-      <StatusTable report={report} />
-      <ProgressCards report={report} />
-      <QuickStats report={report} />
-
-      <RecentActivity />
-    </Container>
+        <Box mt={4}>
+          <RecentActivity />
+        </Box>
+      </Container>
+    </DashboardLayout>
   );
 };
 

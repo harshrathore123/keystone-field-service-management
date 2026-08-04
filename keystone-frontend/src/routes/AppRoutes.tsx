@@ -12,16 +12,32 @@ import TechnicianPage from "../pages/technician/TechnicianPage";
 import TechnicianDashboard from "../pages/technician/TechnicianDashboard";
 import MyJobsPage from "../pages/technician/MyJobsPage";
 
-import { isAuthenticated } from "../utils/token";
+import { isAuthenticated, getUserRole } from "../utils/token";
 import PartPage from "../pages/inventory/PartPage";
 import ReportPage from "../pages/reports/ReportPage";
 
+import NotificationPage from "../pages/notification/NotificationPage";
+import PartUsagePage from "../pages/PartUsage/PartUsagePage";
+import TimeLogPage from "../pages/TimeLog/TimeLogPage";
+import ProfilePage from "../components/layout/ProfilePage";
+import SettingsPage from "../pages/setting/SettingsPage";
+import CustomerPortalPage from "../pages/customer/CustomerPortalPage";
+
 interface ProtectedRouteProps {
   children: ReactNode;
+  allowedRoles?: string[];
 }
 
-function ProtectedRoute({ children }: ProtectedRouteProps) {
-  return isAuthenticated() ? children : <Navigate to="/" replace />;
+function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
+  if (!isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(getUserRole() || "")) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 }
 
 function AppRoutes() {
@@ -35,7 +51,7 @@ function AppRoutes() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["MANAGER", "DISPATCHER"]}>
               <DashboardPage />
             </ProtectedRoute>
           }
@@ -45,8 +61,17 @@ function AppRoutes() {
         <Route
           path="/customers"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["MANAGER", "DISPATCHER"]}>
               <CustomerPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/customer"
+          element={
+            <ProtectedRoute allowedRoles={["CUSTOMER"]}>
+              <CustomerPortalPage />
             </ProtectedRoute>
           }
         />
@@ -55,7 +80,7 @@ function AppRoutes() {
         <Route
           path="/sites"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["MANAGER", "DISPATCHER"]}>
               <SitePage />
             </ProtectedRoute>
           }
@@ -65,7 +90,7 @@ function AppRoutes() {
         <Route
           path="/workorders"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["MANAGER", "DISPATCHER"]}>
               <WorkOrderPage />
             </ProtectedRoute>
           }
@@ -75,7 +100,7 @@ function AppRoutes() {
         <Route
           path="/technicians"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["MANAGER"]}>
               <TechnicianPage />
             </ProtectedRoute>
           }
@@ -85,7 +110,7 @@ function AppRoutes() {
         <Route
           path="/technician-dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["TECHNICIAN"]}>
               <TechnicianDashboard />
             </ProtectedRoute>
           }
@@ -95,7 +120,7 @@ function AppRoutes() {
         <Route
           path="/my-jobs"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["TECHNICIAN"]}>
               <MyJobsPage />
             </ProtectedRoute>
           }
@@ -105,8 +130,32 @@ function AppRoutes() {
         <Route
           path="/inventory"
           element={
-            <ProtectedRoute>
-              <PartPage/>
+            <ProtectedRoute
+              allowedRoles={["MANAGER", "DISPATCHER", "TECHNICIAN"]}
+            >
+              <PartPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/part-usage"
+          element={
+            <ProtectedRoute
+              allowedRoles={["MANAGER", "DISPATCHER", "TECHNICIAN"]}
+            >
+              <PartUsagePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/time-logs"
+          element={
+            <ProtectedRoute
+              allowedRoles={["MANAGER", "DISPATCHER", "TECHNICIAN"]}
+            >
+              <TimeLogPage />
             </ProtectedRoute>
           }
         />
@@ -115,8 +164,42 @@ function AppRoutes() {
         <Route
           path="/reports"
           element={
-            <ProtectedRoute>
-              <ReportPage/>
+            <ProtectedRoute allowedRoles={["MANAGER"]}>
+              <ReportPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Notifications */}
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute
+              allowedRoles={["MANAGER", "DISPATCHER", "TECHNICIAN", "CUSTOMER"]}
+            >
+              <NotificationPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute
+              allowedRoles={["MANAGER", "DISPATCHER", "TECHNICIAN", "CUSTOMER"]}
+            >
+              <SettingsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute
+              allowedRoles={["MANAGER", "DISPATCHER", "TECHNICIAN", "CUSTOMER"]}
+            >
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

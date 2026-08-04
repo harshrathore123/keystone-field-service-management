@@ -29,6 +29,7 @@ import com.keystone.repository.StatusHistoryRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.keystone.entity.Notification;
+import com.keystone.enums.Role;
 
 @Service
 public class WorkOrderServiceImpl implements WorkOrderService {
@@ -144,11 +145,31 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 							"User not found with id : " + workOrderDTO.getAssignedUserId()));
 
 			existingWorkOrder.setAssignedUser(user);
+			if ("NEW".equals(existingWorkOrder.getStatus())) {
+			    existingWorkOrder.setStatus("ASSIGNED");
+			}
 		} else {
 			existingWorkOrder.setAssignedUser(null);
 		}
 
 		WorkOrder updatedWorkOrder = workOrderRepository.save(existingWorkOrder);
+		
+		if (existingWorkOrder.getAssignedUser() != null) {
+
+		    Notification notification = new Notification();
+
+		    notification.setTitle("New Work Order Assigned");
+		    notification.setMessage(
+		            "Work Order " + existingWorkOrder.getWorkOrderNumber() + " has been assigned to you."
+		    );
+
+		    notification.setCreatedAt(LocalDateTime.now());
+		    notification.setIsRead(false);
+		    notification.setUser(existingWorkOrder.getAssignedUser());
+		    notification.setWorkOrder(updatedWorkOrder);
+
+		    notificationRepository.save(notification);
+		}
 
 		return WorkOrderMapper.toDTO(updatedWorkOrder);
 	}
@@ -188,9 +209,24 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 		// Step 3: Assign Technician
 		workOrder.setAssignedUser(user);
+		workOrder.setStatus("ASSIGNED");
 
 		// Step 4: Save
 		WorkOrder updatedWorkOrder = workOrderRepository.save(workOrder);
+		
+		Notification notification = new Notification();
+
+		notification.setTitle("New Work Order Assigned");
+		notification.setMessage(
+		        "Work Order " + workOrder.getWorkOrderNumber() + " has been assigned to you."
+		);
+
+		notification.setCreatedAt(LocalDateTime.now());
+		notification.setIsRead(false);
+		notification.setUser(user);
+		notification.setWorkOrder(updatedWorkOrder);
+
+		notificationRepository.save(notification);
 
 		// Step 5: Return DTO
 		return WorkOrderMapper.toDTO(updatedWorkOrder);
@@ -348,6 +384,30 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 		// Step 7: Save Work Order
 		WorkOrder updatedWorkOrder = workOrderRepository.save(workOrder);
+		
+		// Step 8: Notify Manager		
+		List<User> managers = userRepository.findByRole(Role.MANAGER);
+
+		if (managers.isEmpty()) {
+		    throw new ResourceNotFoundException("Manager not found");
+		}
+
+		User manager = managers.get(0);
+
+		Notification notification = new Notification();
+
+		notification.setTitle("Work Order Started");
+		notification.setMessage(
+		        "Work Order " + updatedWorkOrder.getWorkOrderNumber()
+		                + " has been started by " + technician.getFirstName() + " " + technician.getLastName()
+		);
+
+		notification.setCreatedAt(LocalDateTime.now());
+		notification.setIsRead(false);
+		notification.setUser(manager);
+		notification.setWorkOrder(updatedWorkOrder);
+
+		notificationRepository.save(notification);
 
 		// Step 8: Return DTO
 		return WorkOrderMapper.toDTO(updatedWorkOrder);

@@ -13,8 +13,12 @@ export interface WorkOrder {
 
   active: boolean;
 
-  customerId: number;
-  siteId: number;
+  customerId: number | "";
+  customerName?: string;
+
+  siteId: number | "";
+  siteName?: string;
 
   assignedUserId?: number | null;
+  assignedTechnicianName?: string;
 }

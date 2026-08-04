@@ -139,5 +139,39 @@ public class NotificationController {
 
         return ResponseEntity.ok(response);
     }
+    
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN','CUSTOMER')")
+    @GetMapping("/my")
+    public ResponseEntity<ApiResponse<List<NotificationDTO>>> getMyNotifications() {
 
+        List<NotificationDTO> notifications = notificationService.getMyNotifications();
+
+        ApiResponse<List<NotificationDTO>> response =
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        HttpStatus.OK.value(),
+                        true,
+                        "My notifications fetched successfully.",
+                        notifications);
+
+        return ResponseEntity.ok(response);
+    }
+
+ // Get Unread Notification Count
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER','TECHNICIAN','CUSTOMER')")
+    @GetMapping("/unread-count")
+    public ResponseEntity<ApiResponse<Long>> getUnreadNotificationCount() {
+
+        long count = notificationService.getUnreadNotificationCount();
+
+        ApiResponse<Long> response =
+                new ApiResponse<>(
+                        LocalDateTime.now(),
+                        HttpStatus.OK.value(),
+                        true,
+                        "Unread notification count fetched successfully.",
+                        count);
+
+        return ResponseEntity.ok(response);
+    }
 }

@@ -13,6 +13,7 @@ import com.keystone.exception.ResourceNotFoundException;
 import com.keystone.mapper.PartUsageMapper;
 import com.keystone.repository.PartRepository;
 import com.keystone.repository.PartUsageRepository;
+import com.keystone.repository.WorkOrderRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,16 @@ public class PartUsageServiceImpl implements PartUsageService {
 
 	private final PartUsageRepository repository;
 	private final PartRepository partRepository;
+	private final WorkOrderRepository workOrderRepository;
 
-	public PartUsageServiceImpl(PartUsageRepository repository,
-	                            PartRepository partRepository) {
+	public PartUsageServiceImpl(
+	        PartUsageRepository repository,
+	        PartRepository partRepository,
+	        WorkOrderRepository workOrderRepository) {
+
 	    this.repository = repository;
 	    this.partRepository = partRepository;
+	    this.workOrderRepository = workOrderRepository;
 	}
 
 	@Override
@@ -37,6 +43,11 @@ public class PartUsageServiceImpl implements PartUsageService {
 	                    new ResourceNotFoundException(
 	                            "Part not found with id : " + partUsageDTO.getPartId()));
 
+	    WorkOrder workOrder = workOrderRepository.findById(partUsageDTO.getWorkOrderId())
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "WorkOrder not found with id : " + partUsageDTO.getWorkOrderId()));
+	    
 	    if (part.getQuantityInStock() < partUsageDTO.getQuantityUsed()) {
 	        throw new IllegalArgumentException("Insufficient stock available.");
 	    }
@@ -49,9 +60,9 @@ public class PartUsageServiceImpl implements PartUsageService {
 	    PartUsage partUsage = PartUsageMapper.toEntity(partUsageDTO);
 
 	    partUsage.setPart(part);
-
+	    partUsage.setWorkOrder(workOrder);
 	    PartUsage saved = repository.save(partUsage);
-
+	    
 	    return PartUsageMapper.toDTO(saved);
 	}
 
@@ -74,6 +85,7 @@ public class PartUsageServiceImpl implements PartUsageService {
         return PartUsageMapper.toDTO(partUsage);
     }
 
+    @Transactional
     @Override
     public PartUsageDTO updatePartUsage(Long id, PartUsageDTO partUsageDTO) {
 
@@ -81,22 +93,32 @@ public class PartUsageServiceImpl implements PartUsageService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Part Usage not found with id : " + id));
 
+        Part part = existing.getPart();
+
+        int oldQuantity = existing.getQuantityUsed();
+        int newQuantity = partUsageDTO.getQuantityUsed();
+
+        int difference = newQuantity - oldQuantity;
+
+        if (difference > 0 && part.getQuantityInStock() < difference) {
+            throw new IllegalArgumentException("Insufficient stock available.");
+        }
+
+        part.setQuantityInStock(part.getQuantityInStock() - difference);
+
+        partRepository.save(part);
+        
         existing.setQuantityUsed(partUsageDTO.getQuantityUsed());
         existing.setUsedDate(partUsageDTO.getUsedDate());
         existing.setRemarks(partUsageDTO.getRemarks());
 
         // Update WorkOrder Relationship
         if (partUsageDTO.getWorkOrderId() != null) {
-            WorkOrder workOrder = new WorkOrder();
-            workOrder.setId(partUsageDTO.getWorkOrderId());
-            existing.setWorkOrder(workOrder);
-        }
+        	WorkOrder workOrder = workOrderRepository.findById(partUsageDTO.getWorkOrderId())
+        	        .orElseThrow(() -> new ResourceNotFoundException(
+        	                "WorkOrder not found with id : " + partUsageDTO.getWorkOrderId()));
 
-        // Update Part Relationship
-        if (partUsageDTO.getPartId() != null) {
-            Part part = new Part();
-            part.setId(partUsageDTO.getPartId());
-            existing.setPart(part);
+        	existing.setWorkOrder(workOrder);
         }
 
         PartUsage updatedPartUsage = repository.save(existing);
@@ -105,11 +127,19 @@ public class PartUsageServiceImpl implements PartUsageService {
     }
 
     @Override
+    @Transactional
     public void deletePartUsage(Long id) {
 
         PartUsage partUsage = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Part Usage not found with id : " + id));
+
+        Part part = partUsage.getPart();
+
+        part.setQuantityInStock(
+                part.getQuantityInStock() + partUsage.getQuantityUsed());
+
+        partRepository.save(part);
 
         repository.delete(partUsage);
     }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import com.keystone.dto.ChangePasswordRequest;
 import com.keystone.dto.CreateTechnicianRequest;
 import com.keystone.dto.UpdateTechnicianRequest;
 import com.keystone.dto.UserDTO;
@@ -117,7 +118,7 @@ public class UserController {
     }
     
     @GetMapping("/technicians")
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
     public ResponseEntity<ApiResponse<List<UserDTO>>> getAllTechnicians() {
 
         List<UserDTO> technicians = userService.getAllTechnicians();
@@ -182,5 +183,15 @@ public class UserController {
                 null);
 
         return ResponseEntity.ok(response);
+    }
+    
+    @PutMapping("/change-password")
+    @PreAuthorize("hasAnyRole('MANAGER','TECHNICIAN')")
+    public ResponseEntity<String> changePassword(
+            @RequestBody ChangePasswordRequest request) {
+
+        userService.changePassword(request);
+
+        return ResponseEntity.ok("Password changed successfully.");
     }
 }

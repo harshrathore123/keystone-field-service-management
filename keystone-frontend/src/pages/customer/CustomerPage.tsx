@@ -154,11 +154,27 @@ function CustomerPage() {
         alignItems="center"
         mb={3}
       >
-        <Typography variant="h4" fontWeight="bold">
-          Customers
-        </Typography>
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+            Customers
+          </Typography>
 
-        <Button variant="contained" startIcon={<AddIcon />} onClick={handleAdd}>
+          <Typography variant="body2" color="text.secondary">
+            Manage customer information and companies
+          </Typography>
+        </Box>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleAdd}
+          sx={{
+            borderRadius: 3,
+            px: 3,
+            textTransform: "none",
+            fontWeight: 600,
+          }}
+        >
           Add Customer
         </Button>
       </Box>
@@ -175,7 +191,22 @@ function CustomerPage() {
       </Box>
 
       {loading ? (
-        <CircularProgress />
+        <Box display="flex" justifyContent="center" alignItems="center" py={8}>
+          <CircularProgress />
+        </Box>
+      ) : filteredCustomers.length === 0 ? (
+        <Box
+          py={8}
+          textAlign="center"
+          bgcolor="background.paper"
+          borderRadius={3}
+        >
+          <Typography variant="h6">No customers found</Typography>
+
+          <Typography color="text.secondary">
+            Try another search keyword.
+          </Typography>
+        </Box>
       ) : (
         <CustomerTable
           customers={filteredCustomers}
@@ -193,6 +224,11 @@ function CustomerPage() {
         onClose={() => setOpen(false)}
         maxWidth="md"
         fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+          },
+        }}
       >
         <CustomerForm
           customer={selectedCustomer}

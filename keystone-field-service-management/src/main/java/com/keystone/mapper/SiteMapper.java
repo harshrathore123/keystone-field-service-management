@@ -28,6 +28,7 @@ public final class SiteMapper {
 
         if (site.getCustomer() != null) {
             dto.setCustomerId(site.getCustomer().getId());
+            dto.setCustomerName(site.getCustomer().getCustomerName());
         }
 
         return dto;

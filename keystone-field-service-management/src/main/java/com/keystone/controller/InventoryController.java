@@ -22,7 +22,7 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
     
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @PostMapping
     public ResponseEntity<ApiResponse<InventoryDTO>> createInventory(
             @RequestBody InventoryDTO inventoryDTO) {
@@ -39,7 +39,7 @@ public class InventoryController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @GetMapping
     public ResponseEntity<ApiResponse<List<InventoryDTO>>> getAllInventory() {
 
@@ -55,7 +55,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
     
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @GetMapping("/{inventoryId}")
     public ResponseEntity<ApiResponse<InventoryDTO>> getInventoryById(
             @PathVariable Long inventoryId) {
@@ -72,7 +72,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
     
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @PutMapping("/{inventoryId}")
     public ResponseEntity<ApiResponse<InventoryDTO>> updateInventory(
             @PathVariable Long inventoryId,
@@ -91,7 +91,7 @@ public class InventoryController {
         return ResponseEntity.ok(response);
     }
     
-    @PreAuthorize("hasAnyRole('MANAGER','DISPATCHER')")
+    @PreAuthorize("hasAnyRole('MANAGER')")
     @DeleteMapping("/{inventoryId}")
     public ResponseEntity<ApiResponse<Void>> deleteInventory(
             @PathVariable Long inventoryId) {
