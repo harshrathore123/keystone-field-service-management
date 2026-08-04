@@ -105,7 +105,9 @@ management - Notifications
     │   ├── public
     │   ├── package.json
     │   └── React Frontend
-    │
+    |
+    │── KeyStone_Project_User.postman_collection.json
+    |
     └── README.md
 
 ------------------------------------------------------------------------
@@ -182,40 +184,65 @@ Frontend URL:
     http://localhost:5173
 
 ------------------------------------------------------------------------
+API Documentation & Postman Collection
 
-# 📡 API Modules
+Complete Postman collection is included in the project:
 
-Implemented REST APIs:
+KeyStone_Project_User.postman_collection.json
 
--   Authentication API
--   User Management API
--   Customer API
--   Site API
--   Work Order API
--   Technician API
--   Inventory API
--   Part Usage API
--   Time Logs API
--   Notification API
--   Customer Portal API
--   Reports API
+The Postman collection contains API requests for:
 
-------------------------------------------------------------------------
+Authentication API
 
-# 🧪 API Testing
+User API
 
-Postman collection is available for API testing.
+Customer API
 
-Covered modules:
+Site API
 
--   Authentication APIs
--   Customer APIs
--   Site APIs
--   Work Order APIs
--   Technician APIs
--   Inventory APIs
--   Notification APIs
--   Customer Portal APIs
+WorkOrder API
+
+Technician API
+
+Inventory API
+
+Part API
+
+Part Usage API
+
+TimeLog API
+
+Status History API
+
+Dashboard API
+
+Analytics API
+
+Report API
+
+Customer Portal API
+
+Notification API
+
+How to Test APIs Using Postman
+
+Start Spring Boot backend.
+
+Open Postman.
+
+Import:
+
+<!-- -->
+
+KeyStone_Project_User.postman_collection.json
+
+4.  Use backend URL:
+
+<!-- -->
+
+http://localhost:8080
+
+5.  Login using Auth API.6.  Copy JWT token.7.  Use token for protected APIs.
 
 ------------------------------------------------------------------------
 
