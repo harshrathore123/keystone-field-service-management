@@ -6,14 +6,14 @@ KEYSTONE is a full-stack Field Service Management Platform designed to
 streamline maintenance operations for commercial facilities.
 
 The platform helps organizations manage customers, sites, work orders,
-technicians, inventory, service requests, notifications, and field
-operations through a centralized role-based system.
+technicians, inventory, service requests, notifications, reports, and
+field operations through a centralized role-based system.
 
 ------------------------------------------------------------------------
 
 # 🚀 Features
 
-## Authentication & Authorization
+## 🔐 Authentication & Authorization
 
 -   JWT based authentication
 -   Secure login system
@@ -25,9 +25,9 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 
 ------------------------------------------------------------------------
 
-# User Modules
+# 👥 User Modules
 
-## Manager
+## Manager Module
 
 -   Dashboard analytics
 -   Customer management
@@ -38,7 +38,7 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 -   Reports dashboard
 -   Notifications
 
-## Dispatcher
+## Dispatcher Module
 
 -   Dashboard access
 -   Customer management
@@ -47,7 +47,7 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 -   Work Order tracking
 -   Notifications
 
-## Technician
+## Technician Module
 
 -   Technician Dashboard
 -   View assigned jobs
@@ -56,7 +56,7 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 -   Time Logs management
 -   Notifications
 
-## Customer
+## Customer Module
 
 -   Customer Portal
 -   Raise Service Request
@@ -68,7 +68,7 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 
 ------------------------------------------------------------------------
 
-# Technology Stack
+# 🛠 Technology Stack
 
 ## Backend
 
@@ -99,37 +99,71 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 
 ------------------------------------------------------------------------
 
-# Project Structure
+# 📂 Project Structure
 
-    KEYSTONE-field-service-management
+    keystone-field-service-management
 
+    │
     ├── keystone-field-service-management
-    │   ├── src
-    │   ├── pom.xml
-    │   └── Spring Boot Backend
-
+    │   └── Spring Boot Backend Application
+    │       ├── src
+    │       ├── pom.xml
+    │       └── Maven Configuration Files
+    │
     ├── keystone-frontend
-    │   ├── src
-    │   ├── public
-    │   ├── package.json
-    │   └── React Frontend
-    |
-    |
+    │   └── React Frontend Application
+    │       ├── src
+    │       ├── public
+    │       ├── package.json
+    │       └── Vite Configuration Files
+    │
     ├── KeyStone_Project_User.postman_collection.json
-    |
+    │   └── Complete Postman API Collection
+    │
+    ├── keystone_db.sql
+    │   └── MySQL Database Backup File
+    │
     └── README.md
 
 ------------------------------------------------------------------------
 
-# Backend Setup
+# 🗄 Database Setup & SQL Dump
 
-Create MySQL database:
+The project uses MySQL database.
 
-``` sql
-CREATE DATABASE keystone_db;
-```
+Database Name:
 
-Update database details in:
+    keystone_db
+
+A complete database backup file is included:
+
+    keystone_db.sql
+
+The SQL dump contains the required database structure and data used by
+the KEYSTONE application.
+
+It includes:
+
+-   User related tables
+-   Customer data
+-   Site information
+-   Work Order data
+-   Technician records
+-   Inventory and Parts data
+-   Part Usage records
+-   Time Logs
+-   Notification data
+-   Application related tables
+
+## Import Database Using MySQL Workbench
+
+1.  Open MySQL Workbench.
+2.  Connect to MySQL Server.
+3.  Open `keystone_db.sql`.
+4.  Execute the SQL script.
+5.  Database will be created with required tables and data.
+
+Backend configuration file:
 
     src/main/resources/application.properties
 
@@ -142,9 +176,13 @@ spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 ```
 
+Replace `your_password` with your local MySQL password.
+
 ------------------------------------------------------------------------
 
-# Run Backend
+# ⚙️ Backend Setup
+
+Navigate to backend:
 
     cd keystone-field-service-management
 
@@ -158,11 +196,13 @@ Backend URL:
 
 ------------------------------------------------------------------------
 
-# Frontend Setup
+# 🌐 Frontend Setup
+
+Navigate to frontend:
 
     cd keystone-frontend
 
-Install:
+Install dependencies:
 
     npm install
 
@@ -176,13 +216,13 @@ Frontend URL:
 
 ------------------------------------------------------------------------
 
-# API Documentation & Postman Collection
+# 📡 API Documentation & Postman Collection
 
-Complete Postman collection is included in the project:
+Complete Postman collection is included:
 
     KeyStone_Project_User.postman_collection.json
 
-The Postman collection contains API requests for:
+The collection contains API requests for:
 
 -   Authentication API
 -   User API
@@ -207,72 +247,21 @@ The Postman collection contains API requests for:
 2.  Open Postman.
 3.  Import:
 
+```{=html}
+<!-- -->
 ```
     KeyStone_Project_User.postman_collection.json
-```
+
 4.  Use backend URL:
 
+```{=html}
+<!-- -->
 ```
     http://localhost:8080
-```
+
 5.  Login using Auth API.
 6.  Copy JWT token.
 7.  Use token for protected APIs.
-=======
-Complete Postman collection is included in the project:
-
-KeyStone_Project_User.postman_collection.json
-
-The Postman collection contains API requests for:
-Authentication API
-
-# Project Status
-=======
-User API
-
-Customer API
-
-Site API
-
-WorkOrder API
-
-Technician API
-
-Inventory API
-
-Part API
-
-Part Usage API
-
-TimeLog API
-
-Status History API
-
-Dashboard API
-
-Analytics API
-
-Report API
-
-Customer Portal API
-
-Notification API
-
-How to Test APIs Using Postman
-
-Start Spring Boot backend.
-
-Open Postman.
-
-Import:
-
-KeyStone_Project_User.postman_collection.json
-
-4.  Use backend URL:
-
-http://localhost:8080
-
-5.  Login using Auth API.6.  Copy JWT token.7.  Use token for protected APIs.
 
 ------------------------------------------------------------------------
 
@@ -296,7 +285,7 @@ http://localhost:8080
 
 ------------------------------------------------------------------------
 
-# Build Information
+# 🏗 Build Information
 
 Backend:
 
@@ -308,17 +297,19 @@ Frontend:
 
 ------------------------------------------------------------------------
 
-# Developer
+# 👨‍💻 Developer
 
-Harsh Rathore
+**Harsh Rathore**
 
 Java Full Stack Developer Intern
 
-Project: KEYSTONE - Field Service Management Platform
+Project:
+
+**KEYSTONE - Field Service Management Platform**
 
 ------------------------------------------------------------------------
 
-# Internship Project
+# 📌 Internship Project
 
 Developed as part of Java Full Stack Development Internship.
 
