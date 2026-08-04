@@ -13,7 +13,7 @@ operations through a centralized role-based system.
 
 # 🚀 Features
 
-## 🔐 Authentication & Authorization
+## Authentication & Authorization
 
 -   JWT based authentication
 -   Secure login system
@@ -25,40 +25,50 @@ Supported Roles: - Manager - Dispatcher - Technician - Customer
 
 ------------------------------------------------------------------------
 
-# 👥 User Modules
+# User Modules
 
-## Manager Module
+## Manager
 
-Features: - Dashboard analytics - Customer management - Site
-management - Work Order management - Technician management - Inventory
-management - Reports dashboard - Notifications
+-   Dashboard analytics
+-   Customer management
+-   Site management
+-   Work Order management
+-   Technician management
+-   Inventory management
+-   Reports dashboard
+-   Notifications
+
+## Dispatcher
+
+-   Dashboard access
+-   Customer management
+-   Site management
+-   Work Order assignment
+-   Work Order tracking
+-   Notifications
+
+## Technician
+
+-   Technician Dashboard
+-   View assigned jobs
+-   Update work order status
+-   Part Usage tracking
+-   Time Logs management
+-   Notifications
+
+## Customer
+
+-   Customer Portal
+-   Raise Service Request
+-   View submitted requests
+-   Track request status
+-   Profile management
+-   Settings management
+-   Notifications
 
 ------------------------------------------------------------------------
 
-## Dispatcher Module
-
-Features: - Dashboard access - Customer management - Site management -
-Work Order assignment - Work Order tracking - Notifications
-
-------------------------------------------------------------------------
-
-## Technician Module
-
-Features: - Technician Dashboard - View assigned jobs - Update work
-order status - Part Usage tracking - Time Logs management -
-Notifications
-
-------------------------------------------------------------------------
-
-## Customer Module
-
-Features: - Customer Portal - Raise Service Request - View submitted
-requests - Track request status - Profile management - Settings
-management - Notifications
-
-------------------------------------------------------------------------
-
-# 🛠 Technology Stack
+# Technology Stack
 
 ## Backend
 
@@ -89,30 +99,28 @@ management - Notifications
 
 ------------------------------------------------------------------------
 
-# 📂 Project Structure
+# Project Structure
 
     KEYSTONE-field-service-management
 
-    │
     ├── keystone-field-service-management
     │   ├── src
     │   ├── pom.xml
-    │   ├── mvnw
     │   └── Spring Boot Backend
-    │
+
     ├── keystone-frontend
     │   ├── src
     │   ├── public
     │   ├── package.json
     │   └── React Frontend
-    │
+
+    ├── KeyStone_Project_User.postman_collection.json
+
     └── README.md
 
 ------------------------------------------------------------------------
 
-# ⚙️ Backend Setup
-
-## Database Configuration
+# Backend Setup
 
 Create MySQL database:
 
@@ -120,7 +128,7 @@ Create MySQL database:
 CREATE DATABASE keystone_db;
 ```
 
-Update database configuration in:
+Update database details in:
 
     src/main/resources/application.properties
 
@@ -133,23 +141,15 @@ spring.datasource.password=your_password
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-Replace `your_password` with your local MySQL password.
-
 ------------------------------------------------------------------------
 
-## Run Backend
+# Run Backend
 
-Navigate to backend folder:
-
-``` bash
-cd keystone-field-service-management
-```
+    cd keystone-field-service-management
 
 Run:
 
-``` bash
-mvn spring-boot:run
-```
+    mvn spring-boot:run
 
 Backend URL:
 
@@ -157,25 +157,17 @@ Backend URL:
 
 ------------------------------------------------------------------------
 
-# 🌐 Frontend Setup
+# Frontend Setup
 
-Navigate to frontend folder:
+    cd keystone-frontend
 
-``` bash
-cd keystone-frontend
-```
+Install:
 
-Install dependencies:
+    npm install
 
-``` bash
-npm install
-```
+Run:
 
-Run application:
-
-``` bash
-npm run dev
-```
+    npm run dev
 
 Frontend URL:
 
@@ -183,43 +175,56 @@ Frontend URL:
 
 ------------------------------------------------------------------------
 
-# 📡 API Modules
+# API Documentation & Postman Collection
 
-Implemented REST APIs:
+Complete Postman collection is included in the project:
+
+    KeyStone_Project_User.postman_collection.json
+
+The Postman collection contains API requests for:
 
 -   Authentication API
--   User Management API
+-   User API
 -   Customer API
 -   Site API
--   Work Order API
+-   WorkOrder API
 -   Technician API
 -   Inventory API
+-   Part API
 -   Part Usage API
--   Time Logs API
--   Notification API
+-   TimeLog API
+-   Status History API
+-   Dashboard API
+-   Analytics API
+-   Report API
 -   Customer Portal API
--   Reports API
+-   Notification API
+
+## How to Test APIs Using Postman
+
+1.  Start Spring Boot backend.
+2.  Open Postman.
+3.  Import:
+
+```{=html}
+<!-- -->
+```
+    KeyStone_Project_User.postman_collection.json
+
+4.  Use backend URL:
+
+```{=html}
+<!-- -->
+```
+    http://localhost:8080
+
+5.  Login using Auth API.
+6.  Copy JWT token.
+7.  Use token for protected APIs.
 
 ------------------------------------------------------------------------
 
-# 🧪 API Testing
-
-Postman collection is available for API testing.
-
-Covered modules:
-
--   Authentication APIs
--   Customer APIs
--   Site APIs
--   Work Order APIs
--   Technician APIs
--   Inventory APIs
--   Notification APIs
--   Customer Portal APIs
-
-------------------------------------------------------------------------
-
-# 📊 Project Status
+# Project Status
 
 ✅ Authentication Completed\
 ✅ Role Based Access Control Completed\
@@ -239,34 +244,32 @@ Covered modules:
 
 ------------------------------------------------------------------------
 
-# 🏗 Build Information
+# Build Information
 
-Backend Build:
+Backend:
 
     mvn clean package
 
-Frontend Build:
+Frontend:
 
     npm run build
 
 ------------------------------------------------------------------------
 
-# 👨‍💻 Developer
+# Developer
 
-**Harsh Rathore**
+Harsh Rathore
 
 Java Full Stack Developer Intern
 
-Project:
-
-**KEYSTONE - Field Service Management Platform**
+Project: KEYSTONE - Field Service Management Platform
 
 ------------------------------------------------------------------------
 
-# 📌 Internship Project
+# Internship Project
 
 Developed as part of Java Full Stack Development Internship.
 
-This project demonstrates full-stack application development using
-Spring Boot, React, TypeScript, JWT Authentication, REST APIs, and MySQL
-database integration.
+This project demonstrates full-stack development using Spring Boot,
+React.js, TypeScript, JWT Authentication, REST APIs, and MySQL database
+integration.
