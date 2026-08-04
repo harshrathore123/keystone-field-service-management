@@ -1,61 +1,125 @@
-# Keystone Field Service Management
+# KEYSTONE - Field Service Management Platform
 
-## Project Overview
+## 📌 Project Overview
 
-## Technologies Used
+KEYSTONE is a full-stack Field Service Management Platform designed to streamline maintenance operations for commercial facilities.
 
-Backend
-- Java
+The platform helps organizations manage customers, sites, work orders, technicians, inventory, service requests, notifications, and field operations through a centralized role-based system.
+
+---
+
+# 🚀 Features
+
+## 🔐 Authentication & Authorization
+
+- JWT based authentication
+- Secure login system
+- Role Based Access Control (RBAC)
+
+Supported Roles:
+
+- Manager
+- Dispatcher
+- Technician
+- Customer
+
+
+---
+
+# 👥 User Modules
+
+
+## Manager
+
+Features:
+
+- Dashboard analytics
+- Customer management
+- Site management
+- Work Order management
+- Technician management
+- Inventory management
+- Reports
+- Notifications
+
+
+---
+
+## Dispatcher
+
+Features:
+
+- Dashboard access
+- Customer management
+- Site management
+- Work Order assignment
+- Notifications
+
+
+---
+
+## Technician
+
+Features:
+
+- Technician Dashboard
+- View assigned jobs
+- Update work status
+- Part Usage tracking
+- Time Logs
+- Notifications
+
+
+---
+
+## Customer
+
+Features:
+
+- Customer Portal
+- Raise Service Request
+- View submitted requests
+- Profile management
+- Settings
+- Notifications
+
+
+---
+
+# 🛠 Technology Stack
+
+
+## Backend
+
+- Java 17
 - Spring Boot
 - Spring Security
-- JWT
+- JWT Authentication
+- Spring Data JPA
 - Hibernate
 - MySQL
+- Maven
 
-Frontend
-- React
+
+## Frontend
+
+- React.js
 - TypeScript
+- Material UI (MUI)
+- Axios
+- React Router
 
-## Features
 
-- Login
-- Dashboard
-- Customer CRUD
-- Site CRUD
-- Work Order CRUD
-- Technician Module
-- Inventory Module
+## Tools
 
-## Project Structure
+- IntelliJ IDEA / Eclipse
+- Visual Studio Code
+- Postman
+- MySQL Workbench
+- Git & GitHub
 
-Backend:
-/keystone-field-service-management
 
-Frontend:
-/keystone-frontend
+---
 
-Database:
-/database/keystone.sql
+# 📂 Project Structure
 
-Postman:
-/postman/Keystone_API_Collection.json
-
-## How to Run
-
-Step 1
-Clone Repository
-
-Step 2
-Import SQL File
-
-Step 3
-Update application.properties
-
-Step 4
-Run Backend
-
-Step 5
-Run Frontend
-
-Step 6
-Import Postman Collection
